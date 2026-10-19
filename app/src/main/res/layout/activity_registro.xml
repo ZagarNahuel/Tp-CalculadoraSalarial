@@ -2,134 +2,182 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/RegistroActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:background="#F2F8FF"
-    tools:context=".RegistroActivity"
-    tools:ignore="HardcodedText,Autofill">
+    tools:context=".RegistroActivity">
 
-    <!-- Franja azul superior decorativa -->
+    <!--  Franja azul superior decorativa  -->
     <View
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:background="#005CE6" />
 
-    <!-- Contenedor del formulario -->
-    <LinearLayout
+
+    <TextView
+        android:id="@+id/tv.Registro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="Registro"
+        android:textColor="#005CE6"
+        android:textSize="40sp"
+        android:textStyle="bold" />
+
+    <!--  1. Nombre y Apellido  -->
+    <TextView
+        android:id="@+id/tv.nombreyapellido"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:padding="28dp">
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:text="Nombre y Apellido/s"
+        android:textSize="20sp">
+    </TextView>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:gravity="center"
-            android:text="Registro"
-            android:textColor="#005CE6"
-            android:textSize="32sp"
-            android:textStyle="bold" />
+    <EditText
+        android:id="@+id/et.nombreyapellido"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:textSize="20sp">
+    </EditText>
 
-        <!-- 1. Nombre y Apellido -->
-        <EditText
-            android:id="@+id/etNombreRegistro"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/fondo_campo_celeste"
-            android:gravity="center"
-            android:hint="Nombre y Apellido"
-            android:inputType="textPersonName"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#E0F0FF" />
+    <!--  2. Mail  -->
+    <TextView
+        android:id="@+id/tv.email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:text="E-mail"
+        android:textSize="20sp">
+    </TextView>
 
-        <!-- 2. Mail -->
-        <EditText
-            android:id="@+id/etEmailRegistro"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/fondo_campo_celeste"
-            android:gravity="center"
-            android:hint="E-mail"
-            android:inputType="textEmailAddress"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#E0F0FF" />
+    <EditText
+        android:id="@+id/et.email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:textSize="20sp"
+        android:inputType="textEmailAddress">
+    </EditText>
 
-        <!-- 3. Selector de Categoría (Spinner) -->
-        <Spinner
-            android:id="@+id/spCategoriaRegistro"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/fondo_campo_celeste"
-            android:entries="@array/lista_categorias"
-            android:paddingHorizontal="16dp" />
+    <!--  3. Nombre de Usuario  -->
 
-        <!-- 4. Contraseña -->
-        <EditText
-            android:id="@+id/etAntiguedadRegistro"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/fondo_campo_celeste"
-            android:gravity="center"
-            android:hint="Años de Antigüedad"
-            android:inputType="number"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#E0F0FF" />
+    <TextView
+        android:id="@+id/tv.nombredeusuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:text="Nombre de Usuario"
+        android:textSize="20sp">
+    </TextView>
 
-        <EditText
-            android:id="@+id/etPasswordRegistro"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/fondo_campo_celeste"
-            android:gravity="center"
-            android:hint="Contraseña"
-            android:inputType="textPassword"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#E0F0FF" />
+    <EditText
+        android:id="@+id/et.nombredeusuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:textSize="20sp">
+    </EditText>
 
-        <!-- 5. Repetir Contraseña -->
-        <EditText
-            android:id="@+id/etConfirmPasswordRegistro"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginBottom="32dp"
-            android:background="@drawable/fondo_campo_celeste"
-            android:gravity="center"
-            android:hint="Repetir Contraseña"
-            android:inputType="textPassword"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#E0F0FF" />
+    <!--  4. Contraseña  -->
+    <TextView
+        android:id="@+id/tv.contraseña"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:text="Contraseña"
+        android:textSize="20sp">
+    </TextView>
 
-        <!-- Botón Crear Cuenta -->
-        <Button
-            android:id="@+id/btnRegistrar"
-            android:layout_width="220dp"
-            android:layout_height="55dp"
-            android:text="Crear cuenta"
-            android:textAllCaps="false"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            app:backgroundTint="#005CE6" />
+    <EditText
+        android:id="@+id/et.contraseña"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:textSize="20sp">
+    </EditText>
 
-        <!-- Volver al Login -->
-        <Button
-            android:id="@+id/tvVolverALogin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:backgroundTint="#ffffff"
-            android:padding="0dp"
-            android:text="¿Ya tienes cuenta? Inicia sesión"
-            android:textColor="#005CE6" />
-        <!-- 3.5 Años de Antigüedad (NUEVO) -->
-    </LinearLayout>
+    <!--  5. Repetir Contraseña  -->
+    <TextView
+        android:id="@+id/tv.repetircontrasena"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:text="Repetir Contraseña"
+        android:textSize="20sp">
+    </TextView>
+
+    <EditText
+        android:id="@+id/et.repetircontraseña"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginHorizontal="20dp"
+        android:textSize="20sp">
+    </EditText>
+
+    <!--  6. Selector de Categoría (Spinner)  -->
+    <TextView
+        android:id="@+id/tv.categoria"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:text="Categoria"
+        android:textSize="20sp">
+    </TextView>
+
+    <Spinner
+        android:id="@+id/sp.categoria"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:entries="@array/lista_categorias"
+        android:paddingHorizontal="16dp">
+    </Spinner>
+
+    <!--  7 Años de Antigüedad (NUEVO)  -->>
+    <TextView
+        android:id="@+id/tv.antiguedad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:text="Antiguedad"
+        android:textSize="20sp">
+    </TextView>
+
+    <EditText
+        android:id="@+id/et.antiguedad"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="40dp"
+        android:hint="En años"
+        android:inputType="number"
+        android:textSize="20sp">
+    </EditText>
 
 
-</LinearLayout>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="60dp"
+        android:layout_marginBottom="20dp"
+        android:background="#005CE6"
+        android:text="Crear Usuario"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold">
+
+
+    </Button>
+
+    <TextView
+        android:id="@+id/textView.nombredeusuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:gravity="center"
+        android:text="¿ya tienes una cuenta? Inicia sesión"
+        android:textColor="#005CE6"
+        android:textSize="15sp">

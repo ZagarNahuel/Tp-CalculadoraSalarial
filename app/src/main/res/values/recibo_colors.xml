@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Prefijo recibo_ para no pisar la paleta de otras pantallas. -->
+    <color name="recibo_fondo_pantalla">#F5F7FB</color>
+    <color name="recibo_blanco">#FFFFFF</color>
+    <color name="recibo_azul">#2B6EF6</color>
+    <color name="recibo_texto">#1A2B4C</color>
+    <color name="recibo_texto_secundario">#51647D</color>
+    <color name="recibo_verde_texto">#176534</color>
+    <color name="recibo_fondo_verde">#E7F4EA</color>
+    <color name="recibo_fondo_quincena">#EEF4FF</color>
+    <color name="recibo_fondo_total">#E8F0FF</color>
+    <color name="recibo_fondo_cabecera_tabla">#E7EFFF</color>
+    <color name="recibo_fondo_total_tabla">#D8E7FF</color>
+    <color name="recibo_separador">#E2E8F0</color>
+</resources>

@@ -1,0 +1,7 @@
+# Un solo tipo de salto de línea en todo el repositorio (evita archivos "modificados" que solo cambian CRLF/LF)
+* text=auto
+gradlew text eol=lf
+*.bat text eol=crlf
+*.jar binary
+*.webp binary
+*.png binary

@@ -1,9 +1,12 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.ProyectoMobile" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+<resources>
+    <!--
+        Tema único de la app. Es claro a propósito: todas las pantallas usan la paleta azul/celeste
+        de colores_calculadora.xml y recibo_colors.xml, así que no hay versión oscura (values-night).
+    -->
+    <style name="Base.Theme.CalculadoraSalarial" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/calc_azul</item>
+        <item name="colorOnPrimary">@color/white</item>
     </style>
 
-    <style name="Theme.ProyectoMobile" parent="Base.Theme.ProyectoMobile" />
+    <style name="Theme.CalculadoraSalarial" parent="Base.Theme.CalculadoraSalarial" />
 </resources>

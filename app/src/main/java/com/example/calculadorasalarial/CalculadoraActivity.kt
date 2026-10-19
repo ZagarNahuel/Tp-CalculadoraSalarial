@@ -1,7 +1,6 @@
 package com.example.calculadorasalarial
 
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Typeface
@@ -20,32 +19,50 @@ import android.widget.LinearLayout
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.ColorRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.children
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.Calendar
 
+/**
+ * Pantalla principal (Home). Los datos del empleado (categoría y antigüedad) salen del
+ * registro guardado en SharedPreferences; acá solo se marcan los días del mes.
+ *
+ *  - Tocar un día:            blanco -> justificada (J) -> injustificada (I) -> blanco
+ *  - Mantener presionado:     feriado trabajado (F, se paga x2). Mantener de nuevo lo saca.
+ */
 class CalculadoraActivity : AppCompatActivity() {
 
     companion object {
-        private const val PREFS = "calculadora_pref"
-        private const val PREF_CATEGORIA = "reg_categoria"     // lo guarda RegistroActivity
-        private const val PREF_ANTIGUEDAD = "reg_antiguedad"   // lo guarda RegistroActivity
         private const val TAG_DOMINGO = "domingo"
         private const val ANIO_BASE = 2020   // las páginas de años empiezan en 2020, 2032, 2008...
         private const val INICIO_MIN = 2008
         private const val INICIO_MAX = 2092
+
+        // Claves para conservar el calendario si Android recrea la pantalla
+        private const val GUARDADO_ESTADO = "estado_dias"
+        private const val GUARDADO_MES = "mes"
+        private const val GUARDADO_ANIO = "anio"
     }
 
-    // 0 = Trabajado (blanco), 1 = Falta justificada (rojo), 2 = Falta injustificada (negro)
-    private val estadoDias = IntArray(32) { 0 }
+    private val repositorio by lazy { RepositorioUsuarios(this) }
+
+    // 0 = Trabajado, 1 = Justificada, 2 = Injustificada, 3 = Feriado (ver MotorLiquidacion.ESTADO_*)
+    private val estadoDias = IntArray(32)
     private var ultimoDiaMes = 31
 
+    // Mes (1..12) y año del calendario que se está mostrando: si cambian, se reinician las marcas
+    private var mesMostrado = -1
+    private var anioMostrado = -1
+
+    private lateinit var tvDatosEmpleado: TextView
     private lateinit var spMes: Spinner
     private lateinit var tvAnio: TextView
     private var anioSeleccionado = Calendar.getInstance().get(Calendar.YEAR)
@@ -57,48 +74,40 @@ class CalculadoraActivity : AppCompatActivity() {
     private lateinit var cbHabilitarQ2: CheckBox
     private lateinit var layoutContenedorQ1: LinearLayout
     private lateinit var layoutContenedorQ2: LinearLayout
+    private lateinit var etHorasExtraQ1: EditText
+    private lateinit var etHorasExtraQ2: EditText
+    private lateinit var cbApercibimientoQ1: CheckBox
+    private lateinit var cbApercibimientoQ2: CheckBox
+    private lateinit var tvUltimoNeto: TextView
+
+    // El Recibo nos devuelve el neto calculado o pide empezar una consulta nueva.
+    private val lanzadorRecibo =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { resultado ->
+            val datos = resultado.data
+            if (resultado.resultCode != RESULT_OK || datos == null) return@registerForActivityResult
+
+            if (datos.getStringExtra(ReciboActivity.EXTRA_ACCION_RECIBO) == ReciboActivity.ACCION_NUEVA_CONSULTA) {
+                reiniciarFormulario()
+            } else if (datos.hasExtra(ReciboActivity.EXTRA_RESULTADO_NETO)) {
+                mostrarUltimoNeto(datos.getDoubleExtra(ReciboActivity.EXTRA_RESULTADO_NETO, 0.0))
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Solo vertical: evita que al girar el celular se pierdan los días marcados
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        setContentView(R.layout.activity_calculadora)
-        ajustarBordesDelSistema()
 
-        val pref = getSharedPreferences(PREFS, MODE_PRIVATE)
-
-        findViewById<Button>(R.id.btnCerrarSesion).setOnClickListener {
-            pref.edit().putBoolean("mantener_sesion", false).apply()
-            irAlLogin()
-        }
-
-        // 1. Categoría y antigüedad: primero lo que llega del Registro, si no lo guardado al registrarse
-        val categoria = intent.getStringExtra("CATEGORIA")?.takeIf { it.startsWith("CATEGORIA") }
-            ?: pref.getString(PREF_CATEGORIA, null)?.takeIf { it.startsWith("CATEGORIA") }
-
-        if (categoria == null) {
-            // El registro es obligatorio: sin categoría no se puede calcular.
-            // Se desactiva "mantener sesión" para que el login no vuelva a mandar acá en bucle.
-            pref.edit().putBoolean("mantener_sesion", false).apply()
-            Toast.makeText(
-                this,
-                "Primero regístrate y elige tu categoría para poder calcular.",
-                Toast.LENGTH_LONG
-            ).show()
+        // Sin una cuenta iniciada no hay categoría con la que calcular: se vuelve al login.
+        if (repositorio.usuarioActual() == null) {
             irAlLogin()
             return
         }
 
-        val antiguedad = if (intent.hasExtra("ANTIGUEDAD")) {
-            intent.getIntExtra("ANTIGUEDAD", 0)
-        } else {
-            pref.getInt(PREF_ANTIGUEDAD, 0)
-        }
+        // La orientación vertical se fija en el AndroidManifest (screenOrientation="portrait").
+        setContentView(R.layout.activity_calculadora)
+        ajustarBordesDelSistema()
 
-        findViewById<TextView>(R.id.tvDatosEmpleado).text =
-            "Categoría: $categoria | Antigüedad: $antiguedad años"
-
-        // 2. Vincular elementos del XML
+        // 1. Vincular elementos del XML
+        tvDatosEmpleado = findViewById(R.id.tvDatosEmpleado)
         spMes = findViewById(R.id.spMes)
         tvAnio = findViewById(R.id.tvAnio)
         gridDiasQ1 = findViewById(R.id.gridDiasQ1)
@@ -109,14 +118,21 @@ class CalculadoraActivity : AppCompatActivity() {
         cbHabilitarQ2 = findViewById(R.id.cbHabilitarQ2)
         layoutContenedorQ1 = findViewById(R.id.layoutContenedorQ1)
         layoutContenedorQ2 = findViewById(R.id.layoutContenedorQ2)
-
-        val etHorasExtraQ1 = findViewById<EditText>(R.id.etHorasExtraQ1)
-        val etHorasExtraQ2 = findViewById<EditText>(R.id.etHorasExtraQ2)
-        val cbApercibimientoQ1 = findViewById<CheckBox>(R.id.cbApercibimientoQ1)
-        val cbApercibimientoQ2 = findViewById<CheckBox>(R.id.cbApercibimientoQ2)
+        etHorasExtraQ1 = findViewById(R.id.etHorasExtraQ1)
+        etHorasExtraQ2 = findViewById(R.id.etHorasExtraQ2)
+        cbApercibimientoQ1 = findViewById(R.id.cbApercibimientoQ1)
+        cbApercibimientoQ2 = findViewById(R.id.cbApercibimientoQ2)
+        tvUltimoNeto = findViewById(R.id.tvUltimoNeto)
         val btnCalcularRecibo = findViewById<Button>(R.id.btnCalcularRecibo)
 
-        // 3. Spinner de meses con texto blanco (igual que el año)
+        mostrarDatosEmpleado()
+
+        findViewById<Button>(R.id.btnCerrarSesion).setOnClickListener {
+            repositorio.cerrarSesion()
+            irAlLogin()
+        }
+
+        // 2. Spinner de meses con texto blanco (igual que el año)
         val meses = resources.getStringArray(R.array.lista_meses)
         val adaptador = object : ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, meses) {
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -128,13 +144,25 @@ class CalculadoraActivity : AppCompatActivity() {
         adaptador.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spMes.adapter = adaptador
 
-        // 4. Mes y año actuales por defecto
-        val hoy = Calendar.getInstance()
-        spMes.setSelection(hoy.get(Calendar.MONTH))
-        anioSeleccionado = hoy.get(Calendar.YEAR)
+        // 3. Mes y año: los de hoy, o los que había antes de que Android recreara la pantalla
+        if (savedInstanceState == null) {
+            val hoy = Calendar.getInstance()
+            spMes.setSelection(hoy.get(Calendar.MONTH))
+            anioSeleccionado = hoy.get(Calendar.YEAR)
+        } else {
+            val guardado = savedInstanceState.getIntArray(GUARDADO_ESTADO)
+            if (guardado != null) {
+                guardado.copyInto(estadoDias, 0, 0, minOf(guardado.size, estadoDias.size))
+            }
+            val mesGuardado = savedInstanceState.getInt(GUARDADO_MES, 0)
+            anioSeleccionado = savedInstanceState.getInt(GUARDADO_ANIO, anioSeleccionado)
+            spMes.setSelection(mesGuardado)
+            mesMostrado = mesGuardado + 1
+            anioMostrado = anioSeleccionado
+        }
         tvAnio.text = anioSeleccionado.toString()
 
-        // 5. Al cambiar el mes o el año, el calendario se vuelve a armar
+        // 4. Al cambiar el mes o el año, el calendario se vuelve a armar
         spMes.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 reconstruirCalendarios()
@@ -144,7 +172,7 @@ class CalculadoraActivity : AppCompatActivity() {
         }
         tvAnio.setOnClickListener { mostrarSelectorAnio() }
 
-        // 6. Habilitar / deshabilitar quincenas
+        // 5. Habilitar / deshabilitar quincenas
         cbHabilitarQ1.setOnCheckedChangeListener { _, marcado ->
             cambiarEstadoSeccion(layoutContenedorQ1, marcado)
         }
@@ -154,40 +182,91 @@ class CalculadoraActivity : AppCompatActivity() {
 
         reconstruirCalendarios()
 
-        // 7. Calcular recibo
-        btnCalcularRecibo.setOnClickListener {
-            if (!cbHabilitarQ1.isChecked && !cbHabilitarQ2.isChecked) {
-                Toast.makeText(this, "Habilita al menos una quincena para calcular.", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
+        // 6. Calcular recibo
+        btnCalcularRecibo.setOnClickListener { calcularRecibo() }
+    }
 
-            // Una quincena deshabilitada se envía sin faltas, apercibimientos ni horas extra.
-            // Así, si solo se calcula la 2°, se asume que en la 1° cobró todos los premios
-            // y el premio perfecto depende únicamente de la 2° quincena.
-            val dias = estadoDias.copyOf()
-            if (!cbHabilitarQ1.isChecked) for (d in 1..15) dias[d] = 0
-            if (!cbHabilitarQ2.isChecked) for (d in 16..31) dias[d] = 0
+    override fun onResume() {
+        super.onResume()
+        // Si en el Recibo se cambió la categoría, el encabezado tiene que reflejarlo.
+        if (::tvDatosEmpleado.isInitialized) mostrarDatosEmpleado()
+    }
 
-            val horasQ1 = if (cbHabilitarQ1.isChecked) etHorasExtraQ1.text.toString().toIntOrNull() ?: 0 else 0
-            val horasQ2 = if (cbHabilitarQ2.isChecked) etHorasExtraQ2.text.toString().toIntOrNull() ?: 0 else 0
-            val apercQ1 = cbHabilitarQ1.isChecked && cbApercibimientoQ1.isChecked
-            val apercQ2 = cbHabilitarQ2.isChecked && cbApercibimientoQ2.isChecked
-
-            val intentRecibo = Intent(this, ReciboActivity::class.java)
-            intentRecibo.putExtra("CATEGORIA", categoria)
-            intentRecibo.putExtra("ANTIGUEDAD", antiguedad)
-            intentRecibo.putExtra("MES_NOMBRE", spMes.selectedItem.toString())
-            intentRecibo.putExtra("MES_NUMERO", spMes.selectedItemPosition + 1) // 1 = Enero ... 12 = Diciembre
-            intentRecibo.putExtra("ANIO", anioSeleccionado)
-            intentRecibo.putExtra("ESTADO_DIAS", dias)
-            intentRecibo.putExtra("HORAS_EXTRA_Q1", horasQ1)
-            intentRecibo.putExtra("HORAS_EXTRA_Q2", horasQ2)
-            intentRecibo.putExtra("APERCIBIMIENTO_Q1", apercQ1)
-            intentRecibo.putExtra("APERCIBIMIENTO_Q2", apercQ2)
-            intentRecibo.putExtra("MOSTRAR_Q1", cbHabilitarQ1.isChecked)
-            intentRecibo.putExtra("MOSTRAR_Q2", cbHabilitarQ2.isChecked)
-            startActivity(intentRecibo)
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        if (::spMes.isInitialized) {
+            outState.putIntArray(GUARDADO_ESTADO, estadoDias)
+            outState.putInt(GUARDADO_MES, spMes.selectedItemPosition)
+            outState.putInt(GUARDADO_ANIO, anioSeleccionado)
         }
+    }
+
+    // ------------------------------------------------------------------
+    // Datos y recibo
+    // ------------------------------------------------------------------
+
+    private fun mostrarDatosEmpleado() {
+        val usuario = repositorio.usuarioActual() ?: return
+        tvDatosEmpleado.text = getString(
+            R.string.calc_datos_empleado, usuario.nombre, usuario.categoria, usuario.antiguedad
+        )
+    }
+
+    private fun calcularRecibo() {
+        val usuario = repositorio.usuarioActual()
+        if (usuario == null) {
+            irAlLogin()
+            return
+        }
+        if (!cbHabilitarQ1.isChecked && !cbHabilitarQ2.isChecked) {
+            Toast.makeText(this, R.string.calc_error_sin_quincena, Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Una quincena deshabilitada se envía sin faltas, apercibimientos ni horas extra.
+        // Así, si solo se calcula la 2°, se asume que en la 1° cobró todos los premios
+        // y el premio perfecto depende únicamente de la 2° quincena.
+        val dias = estadoDias.copyOf()
+        if (!cbHabilitarQ1.isChecked) for (d in 1..15) dias[d] = MotorLiquidacion.ESTADO_TRABAJADO
+        if (!cbHabilitarQ2.isChecked) for (d in 16..31) dias[d] = MotorLiquidacion.ESTADO_TRABAJADO
+
+        val horasQ1 = if (cbHabilitarQ1.isChecked) etHorasExtraQ1.text.toString().toIntOrNull() ?: 0 else 0
+        val horasQ2 = if (cbHabilitarQ2.isChecked) etHorasExtraQ2.text.toString().toIntOrNull() ?: 0 else 0
+        val apercQ1 = cbHabilitarQ1.isChecked && cbApercibimientoQ1.isChecked
+        val apercQ2 = cbHabilitarQ2.isChecked && cbApercibimientoQ2.isChecked
+
+        val intentRecibo = Intent(this, ReciboActivity::class.java)
+        intentRecibo.putExtra("CATEGORIA", usuario.categoria)
+        intentRecibo.putExtra("ANTIGUEDAD", usuario.antiguedad)
+        intentRecibo.putExtra("MES_NOMBRE", spMes.selectedItem.toString())
+        intentRecibo.putExtra("MES_NUMERO", spMes.selectedItemPosition + 1) // 1 = Enero ... 12 = Diciembre
+        intentRecibo.putExtra("ANIO", anioSeleccionado)
+        intentRecibo.putExtra("ESTADO_DIAS", dias)
+        intentRecibo.putExtra("HORAS_EXTRA_Q1", horasQ1)
+        intentRecibo.putExtra("HORAS_EXTRA_Q2", horasQ2)
+        intentRecibo.putExtra("APERCIBIMIENTO_Q1", apercQ1)
+        intentRecibo.putExtra("APERCIBIMIENTO_Q2", apercQ2)
+        intentRecibo.putExtra("MOSTRAR_Q1", cbHabilitarQ1.isChecked)
+        intentRecibo.putExtra("MOSTRAR_Q2", cbHabilitarQ2.isChecked)
+        lanzadorRecibo.launch(intentRecibo)
+    }
+
+    /** "Nueva consulta" desde el Recibo: deja el formulario como recién abierto. */
+    private fun reiniciarFormulario() {
+        estadoDias.fill(0)
+        etHorasExtraQ1.text.clear()
+        etHorasExtraQ2.text.clear()
+        cbApercibimientoQ1.isChecked = false
+        cbApercibimientoQ2.isChecked = false
+        cbHabilitarQ1.isChecked = true
+        cbHabilitarQ2.isChecked = false
+        tvUltimoNeto.visibility = View.GONE
+        reconstruirCalendarios()
+    }
+
+    private fun mostrarUltimoNeto(neto: Double) {
+        tvUltimoNeto.text = getString(R.string.calc_ultimo_neto, Formato.dinero(neto))
+        tvUltimoNeto.visibility = View.VISIBLE
     }
 
     // ------------------------------------------------------------------
@@ -269,14 +348,17 @@ class CalculadoraActivity : AppCompatActivity() {
     /** Vuelve a armar las dos quincenas según el mes y el año elegidos. */
     private fun reconstruirCalendarios() {
         val anio = anioSeleccionado
-        val mes = spMes.selectedItemPosition // 0 = Enero ... 11 = Diciembre
-        if (mes < 0) return
+        val mes = spMes.selectedItemPosition + 1 // 1 = Enero ... 12 = Diciembre
+        if (mes < 1) return
 
-        estadoDias.fill(0) // al cambiar de mes o año se reinician las marcas
-        ultimoDiaMes = Calendar.getInstance().apply {
-            clear()
-            set(anio, mes, 1)
-        }.getActualMaximum(Calendar.DAY_OF_MONTH)
+        // Las marcas solo se reinician si realmente cambió el mes o el año
+        if (mes != mesMostrado || anio != anioMostrado) {
+            estadoDias.fill(0)
+            mesMostrado = mes
+            anioMostrado = anio
+        }
+
+        ultimoDiaMes = Fechas.ultimoDiaDelMes(anio, mes)
 
         construirCalendario(gridDiasQ1, 1, 15, mes, anio)
         construirCalendario(gridDiasQ2, 16, ultimoDiaMes, mes, anio)
@@ -302,15 +384,14 @@ class CalculadoraActivity : AppCompatActivity() {
         }
 
         // Casilleros vacíos hasta llegar al día de la semana en que empieza el rango
-        repeat(columnaDeLaSemana(anio, mes, desde)) {
+        repeat(Fechas.columnaDeLaSemana(anio, mes, desde)) {
             val vacio = View(this)
             vacio.layoutParams = paramsCelda(dp(48))
             grid.addView(vacio)
         }
 
         for (dia in desde..hasta) {
-            val esDomingo = columnaDeLaSemana(anio, mes, dia) == 6
-            grid.addView(crearBotonDia(dia, esDomingo))
+            grid.addView(crearBotonDia(dia, Fechas.esDomingo(anio, mes, dia)))
         }
     }
 
@@ -337,28 +418,51 @@ class CalculadoraActivity : AppCompatActivity() {
             boton.backgroundTintList = ColorStateList.valueOf(color(R.color.calc_domingo_fondo))
             boton.setTextColor(color(R.color.calc_domingo_texto))
         } else {
-            pintarDia(boton, dia, 0)
+            pintarDia(boton, dia, estadoDias[dia])
+
             boton.setOnClickListener {
-                // Rotar estado: 0 (blanco) -> 1 (rojo) -> 2 (negro) -> 0 (blanco)
-                estadoDias[dia] = (estadoDias[dia] + 1) % 3
+                // Rotar estado: blanco -> justificada (rojo) -> injustificada (negro) -> blanco.
+                // Si el día estaba como feriado, un toque lo vuelve a blanco.
+                estadoDias[dia] = if (estadoDias[dia] == MotorLiquidacion.ESTADO_FERIADO) {
+                    MotorLiquidacion.ESTADO_TRABAJADO
+                } else {
+                    (estadoDias[dia] + 1) % 3
+                }
                 pintarDia(boton, dia, estadoDias[dia])
                 actualizarResumenes()
+            }
+
+            boton.setOnLongClickListener {
+                // Mantener presionado: marca / desmarca el día como feriado trabajado (pago x2)
+                estadoDias[dia] = if (estadoDias[dia] == MotorLiquidacion.ESTADO_FERIADO) {
+                    MotorLiquidacion.ESTADO_TRABAJADO
+                } else {
+                    MotorLiquidacion.ESTADO_FERIADO
+                }
+                pintarDia(boton, dia, estadoDias[dia])
+                actualizarResumenes()
+                true
             }
         }
         return boton
     }
 
-    /** Además del color, agrega una letra (J / I) para no depender solo del color. */
+    /** Además del color, agrega una letra (J / I / F) para no depender solo del color. */
     private fun pintarDia(boton: MaterialButton, dia: Int, estado: Int) {
         when (estado) {
-            1 -> {
+            MotorLiquidacion.ESTADO_JUSTIFICADA -> {
                 boton.text = "$dia\nJ"
                 boton.backgroundTintList = ColorStateList.valueOf(color(R.color.calc_rojo))
                 boton.setTextColor(Color.WHITE)
             }
-            2 -> {
+            MotorLiquidacion.ESTADO_INJUSTIFICADA -> {
                 boton.text = "$dia\nI"
                 boton.backgroundTintList = ColorStateList.valueOf(color(R.color.calc_negro))
+                boton.setTextColor(Color.WHITE)
+            }
+            MotorLiquidacion.ESTADO_FERIADO -> {
+                boton.text = "$dia\nF"
+                boton.backgroundTintList = ColorStateList.valueOf(color(R.color.calc_feriado))
                 boton.setTextColor(Color.WHITE)
             }
             else -> {
@@ -375,18 +479,10 @@ class CalculadoraActivity : AppCompatActivity() {
     }
 
     private fun resumen(desde: Int, hasta: Int): String {
-        val justificadas = (desde..hasta).count { estadoDias[it] == 1 }
-        val injustificadas = (desde..hasta).count { estadoDias[it] == 2 }
-        return "Justificadas: $justificadas · Injustificadas: $injustificadas"
-    }
-
-    /** Lunes = 0 ... Domingo = 6 */
-    private fun columnaDeLaSemana(anio: Int, mes: Int, dia: Int): Int {
-        val cal = Calendar.getInstance().apply {
-            clear()
-            set(anio, mes, dia)
-        }
-        return (cal.get(Calendar.DAY_OF_WEEK) + 5) % 7
+        val justificadas = (desde..hasta).count { estadoDias[it] == MotorLiquidacion.ESTADO_JUSTIFICADA }
+        val injustificadas = (desde..hasta).count { estadoDias[it] == MotorLiquidacion.ESTADO_INJUSTIFICADA }
+        val feriados = (desde..hasta).count { estadoDias[it] == MotorLiquidacion.ESTADO_FERIADO }
+        return getString(R.string.calc_resumen_quincena, justificadas, injustificadas, feriados)
     }
 
     private fun cambiarEstadoSeccion(contenedor: LinearLayout, habilitado: Boolean) {
@@ -421,15 +517,26 @@ class CalculadoraActivity : AppCompatActivity() {
 
     private fun color(@ColorRes id: Int): Int = ContextCompat.getColor(this, id)
 
-    /** Evita que el encabezado y la barra inferior queden bajo la barra de estado o de navegación. */
+    /**
+     * Evita que el encabezado y la barra inferior queden bajo la barra de estado, la de
+     * navegación o el teclado (la pantalla se dibuja de borde a borde).
+     */
     private fun ajustarBordesDelSistema() {
         val raiz = findViewById<View>(R.id.raizCalculadora)
         val encabezado = findViewById<View>(R.id.encabezadoCalc)
         val barraInferior = findViewById<View>(R.id.barraInferior)
+        WindowCompat.getInsetsController(window, raiz).isAppearanceLightStatusBars = false
+
         ViewCompat.setOnApplyWindowInsetsListener(raiz) { _, insets ->
-            val barras = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            encabezado.setPadding(dp(20), barras.top + dp(12), dp(8), dp(12))
-            barraInferior.setPadding(dp(20), dp(12), dp(20), barras.bottom + dp(12))
+            val barras = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
+            )
+            val teclado = insets.getInsets(WindowInsetsCompat.Type.ime())
+            encabezado.setPadding(dp(20) + barras.left, barras.top + dp(12), dp(8) + barras.right, dp(12))
+            barraInferior.setPadding(
+                dp(20) + barras.left, dp(12), dp(20) + barras.right,
+                dp(12) + maxOf(barras.bottom, teclado.bottom)
+            )
             insets
         }
     }

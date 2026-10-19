@@ -2,204 +2,111 @@ package com.example.calculadorasalarial
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Patterns
 import android.widget.Button
+import android.widget.EditText
 import android.widget.Spinner
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.calculadorasalarial.CalculadoraActivity
-import com.example.calculadorasalarial.R
 
+/**
+ * Pantalla de Registro: valida los datos y los guarda con [RepositorioUsuarios]
+ * (SharedPreferences). La categoría y la antigüedad que se eligen acá son las que
+ * después usan la Calculadora y el Recibo.
+ */
 class RegistroActivity : AppCompatActivity() {
+
+    companion object {
+        const val EXTRA_EMAIL_REGISTRADO = "EMAIL_REGISTRADO"
+        private const val LARGO_MINIMO_PASSWORD = 8
+        private const val ANTIGUEDAD_MAXIMA = 60
+        private val REGEX_USUARIO = Regex("^[A-Za-z0-9._-]{3,20}$")
+    }
+
+    private lateinit var etNombre: EditText
+    private lateinit var etEmail: EditText
+    private lateinit var etUsuario: EditText
+    private lateinit var etPassword: EditText
+    private lateinit var etConfirmar: EditText
+    private lateinit var spCategoria: Spinner
+    private lateinit var etAntiguedad: EditText
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_registro)
+        ajustarBordesDelSistema(findViewById(R.id.raizRegistro), findViewById(R.id.bandaSuperior))
 
-        // 1. Vincular elementos del XML
-        val spCategoria = findViewById<Spinner>(R.id.spCategoriaRegistro)
+        val repositorio = RepositorioUsuarios(this)
+
+        etNombre = findViewById(R.id.etNombreRegistro)
+        etEmail = findViewById(R.id.etEmailRegistro)
+        etUsuario = findViewById(R.id.etUsuarioRegistro)
+        etPassword = findViewById(R.id.etPasswordRegistro)
+        etConfirmar = findViewById(R.id.etConfirmPasswordRegistro)
+        spCategoria = findViewById(R.id.spCategoriaRegistro)
+        etAntiguedad = findViewById(R.id.etAntiguedadRegistro)
         val btnRegistrar = findViewById<Button>(R.id.btnRegistrar)
-        val tvVolverALogin = findViewById<Button>(R.id.tvVolverALogin)
+        val tvVolverALogin = findViewById<TextView>(R.id.tvVolverALogin)
 
-        // 2. Al tocar "Crear cuenta", pasamos a la Calculadora enviando la categoría elegida
         btnRegistrar.setOnClickListener {
-            val categoriaElegida = spCategoria.selectedItem.toString()
-            val intent = Intent(this, CalculadoraActivity::class.java)
-            intent.putExtra("CATEGORIA", categoriaElegida)
-            startActivity(intent)
-        }
+            if (!datosValidos()) return@setOnClickListener
 
-        // 3. Volver al Login
-        tvVolverALogin.setOnClickListener {
-            finish()
-        }
-    }
-}
-[15:42, 19/10/2026] +54 9 11 2388-8341: <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:id="@+id/RegistroActivity"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:gravity="center_horizontal"
-android:orientation="vertical"
-tools:context=".RegistroActivity">
-
-<!--  Franja azul superior decorativa  -->
-<View
-android:layout_width="match_parent"
-android:layout_height="80dp"
-android:background="#005CE6" />
-
-
-<TextView
-android:id="@+id/tv.Registro"
-android:layout_width="wrap_content"
-android:layout_height="wrap_co…
-[15:42, 19/10/2026] +54 9 11 2388-8341: xml
-[15:50, 19/10/2026] +54 9 11 2388-8341: class RegistroActivity : AppCompatActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_register)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.RegistroActivity)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-
-            val etNombreyapellido = findViewById<EditText>(R.id.etNombreyapellido)
-            val etEmail = findViewById<EditText>(R.id.etEmail)
-            val etUsuario = findViewById<EditText>(R.id.etUsuario)
-            val etContrasena = findViewById<EditText>(R.id.etContrasena)
-            val etRepetirContrasena = findViewById<EditText>(R.id.etRepetirContrasena)
-            val spLista_Categoria = findViewById<Spinner>(R.id.spLista_Categoria)
-            val btnCrearUsuario = findViewById<Button>(R.id.btnCrearUsuario)
-            val spAntiguedad = findViewById<Spinner>(R.id.spAntiguedad)
-            val tvVolverALogin = findViewById<Button>(R.id.tvVolverALogin)
-
-            //opciones de la lista desplegable
-            val Lista_Categoria = arrayOf(
-                "Seleccionar Categoría", "CATEGORIA INICIAL", "CATEGORIA 1", "CATEGORIA 2",
-                "CATEGORIA 3", "CATEGORIA 4"
+            val email = etEmail.text.toString().trim()
+            val error = repositorio.registrar(
+                nombre = etNombre.text.toString(),
+                email = email,
+                usuario = etUsuario.text.toString(),
+                password = etPassword.text.toString(),
+                categoria = spCategoria.selectedItem.toString(),
+                antiguedad = etAntiguedad.text.toString().trim().toInt()
             )
 
-            val adaptador = ArrayAdapter(
-                this,
-                android.R.layout.simple_spinner_item,
-                Lista_Categoria
-
-            )
-
-            adaptador.setDropDownViewResource(
-                android.R.layout.simple_spinner_dropdown_item
-            )
-
-            Lista_Categoria.adapter = adaptador
-
-            //opciones de la lista desplegable
-            val lista_meses = arrayOf(
-                "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio","Agosto",
-                "Septiembre", "Octubre", "Noviembre", "Diciembre"
-            )
-
-            val adaptador2 = ArrayAdapter(
-                this,
-                android.R.layout.simple_spinner_item,
-                lista_meses
-
-            )
-
-            adaptador.setDropDownViewResource(
-                android.R.layout.simple_spinner_dropdown_item
-            )
-
-            spAntiguedad.adapter = adaptador
-
-            // Acción del botón "Crear Usuario"
-            btnCrearUsuario.setOnClickListener {
-                val nombre = etNombreyapellido.text.toString().trim()
-                val email = etEmail.text.toString().trim()
-                val usuario = etUsuario.text.toString().trim()
-                val contrasena = etContrasena.text.toString()
-                val repetirContrasena = etRepetirContrasena.text.toString()
-
-                when {
-                    nombre.isEmpty() -> {
-                        etNombreyapellido.error = "Ingresá tu nombre y apellido"
-                        etNombreyapellido.requestFocus()
-                    }
-
-                    email.isEmpty() ||
-                            !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
-                        etEmail.error = "Ingresá un e-mail válido"
-                        etEmail.requestFocus()
-                    }
-
-                    usuario.isEmpty() -> {
-                        etUsuario.error = "Ingresá un nombre de usuario"
-                        etUsuario.requestFocus()
-                    }
-
-                    contrasena.length < 8 -> {
-                        etContrasena.error =
-                            "La contraseña debe tener al menos 8 caracteres"
-                        etContrasena.requestFocus()
-                    }
-
-                    contrasena != repetirContrasena -> {
-                        etRepetirContrasena.error =
-                            "Las contraseñas no coinciden"
-                        etRepetirContrasena.requestFocus()
-                    }
-
-                    spLista_Categoria.selectedItemPosition == 0 -> {
-                        Toast.makeText(
-                            this,
-                            "Seleccioná una categoría",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-
-                    antiguedadTex.isEmpty() -> {
-                        etAntiguedad.error =
-                            "Ingresá la antigüedad en años"
-                        etAntiguedad.requestFocus()
-                    }
-
-                    else -> {
-                        val categoria = spLista_Categoria.selectedItem.toString()
-                        val antiguedad = antiguedadTexto.toIntOrNull()
-
-                        if (antiguedad == null) {
-                            etAntiguedad.error =
-                                "Ingresá una cantidad válida de años"
-
-                        } else {
-                            Toast.makeText(
-                                this,
-                                "Formulario validado correctamente",
-                                Toast.LENGTH_LONG
-                            ).show()
-
-                            // Acá podés guardar el usuario
-                            // en una base de datos.
-                        }
-                    }
+            when (error) {
+                ErrorRegistro.EMAIL_REPETIDO -> marcarError(etEmail, R.string.reg_error_email_repetido)
+                ErrorRegistro.USUARIO_REPETIDO -> marcarError(etUsuario, R.string.reg_error_usuario_repetido)
+                null -> {
+                    // Volvemos al Login con el e-mail ya escrito: ahí se valida lo que se guardó.
+                    setResult(RESULT_OK, Intent().putExtra(EXTRA_EMAIL_REGISTRADO, email))
+                    finish()
                 }
             }
         }
+
+        tvVolverALogin.setOnClickListener { finish() }
     }
 
-// 2. Al tocar "Crear cuenta", pasamos a la Calculadora enviando la categoría elegida
-    btnRegistrar.setOnClickListener
-    {
-        val categoriaElegida = spCategoria.selectedItem.toString()
-        val intent = Intent(this, CalculadoraActivity::class.java)
-        intent.putExtra("CATEGORIA", categoriaElegida)
-        startActivity(intent)
+    /** Valida todos los campos; marca el primero con error y le da el foco. */
+    private fun datosValidos(): Boolean {
+        var primerError: EditText? = null
+        fun fallo(campo: EditText, mensaje: Int) {
+            campo.error = getString(mensaje)
+            if (primerError == null) primerError = campo
+        }
+
+        val email = etEmail.text.toString().trim()
+        val password = etPassword.text.toString()
+        val antiguedad = etAntiguedad.text.toString().trim().toIntOrNull()
+
+        if (etNombre.text.toString().isBlank()) fallo(etNombre, R.string.reg_error_nombre)
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) fallo(etEmail, R.string.reg_error_email)
+        if (!REGEX_USUARIO.matches(etUsuario.text.toString().trim())) fallo(etUsuario, R.string.reg_error_usuario)
+        if (password.length < LARGO_MINIMO_PASSWORD) fallo(etPassword, R.string.reg_error_password)
+        if (etConfirmar.text.toString() != password) fallo(etConfirmar, R.string.reg_error_confirmar)
+        if (antiguedad == null || antiguedad !in 0..ANTIGUEDAD_MAXIMA) fallo(etAntiguedad, R.string.reg_error_antiguedad)
+
+        val categoriaValida = spCategoria.selectedItemPosition > 0 &&
+            MotorLiquidacion.escalaPara(spCategoria.selectedItem.toString()) != null
+        if (!categoriaValida) {
+            Toast.makeText(this, R.string.reg_error_categoria, Toast.LENGTH_SHORT).show()
+        }
+
+        primerError?.requestFocus()
+        return primerError == null && categoriaValida
     }
 
-// 3. Volver al Login
-    tvVolverALogin.setOnClickListener
-    {
-        finish()
+    private fun marcarError(campo: EditText, mensaje: Int) {
+        campo.error = getString(mensaje)
+        campo.requestFocus()
     }
 }

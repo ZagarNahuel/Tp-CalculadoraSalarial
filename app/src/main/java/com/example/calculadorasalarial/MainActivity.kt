@@ -6,58 +6,68 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import com.example.calculadorasalarial.CalculadoraActivity
-import com.example.calculadorasalarial.R
 
+/** Pantalla de Login: valida lo que se guardó en el Registro (SharedPreferences). */
 class MainActivity : AppCompatActivity() {
 
-    private val EMAIL_PRUEBA = "prueba@mail.com"
-    private val PASSWORD_PRUEBA = "1234"
+    private lateinit var repositorio: RepositorioUsuarios
+    private lateinit var etUsuario: EditText
+    private lateinit var etPassword: EditText
+
+    // El Registro devuelve el e-mail con el que se creó la cuenta para dejarlo escrito acá.
+    private val lanzadorRegistro =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { resultado ->
+            if (resultado.resultCode == RESULT_OK) {
+                val email = resultado.data?.getStringExtra(RegistroActivity.EXTRA_EMAIL_REGISTRADO).orEmpty()
+                etUsuario.setText(email)
+                etPassword.text.clear()
+                etPassword.requestFocus()
+                Toast.makeText(this, R.string.login_cuenta_creada, Toast.LENGTH_LONG).show()
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        repositorio = RepositorioUsuarios(this)
 
-        val pref = getSharedPreferences("calculadora_pref", MODE_PRIVATE)
-        if (pref.getBoolean("mantener_sesion",false)) {
+        // Si el usuario eligió "Mantener sesión", se salta el login.
+        if (repositorio.haySesionGuardada()) {
             irCalculadora()
             return
         }
 
-        val etEmail = findViewById<EditText>(R.id.etEmailLogin)
-        val etPass = findViewById<EditText>(R.id.etPasswordLogin)
-        val cbMantener = findViewById<CheckBox>(R.id.cbMantenerSesion)
+        setContentView(R.layout.activity_main)
+        ajustarBordesDelSistema(findViewById(R.id.raizLogin), findViewById(R.id.bandaSuperior))
 
+        etUsuario = findViewById(R.id.etEmailLogin)
+        etPassword = findViewById(R.id.etPasswordLogin)
+        val cbMantener = findViewById<CheckBox>(R.id.cbMantenerSesion)
         val btnIngresar = findViewById<Button>(R.id.btnIngresar)
         val btnIrARegistro = findViewById<Button>(R.id.btnIrARegistro)
 
-        // 1. Al tocar Ingresar, va a la Calculadora
         btnIngresar.setOnClickListener {
-            val intent = Intent(this, CalculadoraActivity::class.java)
-            //startActivity(intent)
+            val identificador = etUsuario.text.toString().trim()
+            val password = etPassword.text.toString()
 
-            val email = etEmail.text.toString().trim()
-            val pass = etPass.text.toString().trim()
+            when {
+                identificador.isEmpty() || password.isEmpty() ->
+                    Toast.makeText(this, R.string.login_campos_vacios, Toast.LENGTH_SHORT).show()
 
-            if (email == EMAIL_PRUEBA && pass == PASSWORD_PRUEBA) {
-                pref.edit().putBoolean("mantener_sesion", cbMantener.isChecked).apply()
-                irCalculadora()
-            } else {
-                Toast.makeText(this, "Email o contraseña incorrecto", Toast.LENGTH_SHORT).show()
+                repositorio.iniciarSesion(identificador, password, cbMantener.isChecked) -> irCalculadora()
+
+                else -> Toast.makeText(this, R.string.login_credenciales_invalidas, Toast.LENGTH_SHORT).show()
             }
         }
 
-        // 2. Al tocar Regístrate, abre la pantalla de Registro
         btnIrARegistro.setOnClickListener {
-            val intent = Intent(this, RegistroActivity::class.java)
-            startActivity(intent)
+            lanzadorRegistro.launch(Intent(this, RegistroActivity::class.java))
         }
     }
-    private fun irCalculadora(){
-        val intent = Intent(this, CalculadoraActivity::class.java)
-        intent.putExtra("CATEGORIA", "COMPLETAR_CON_UNA_CATEGORIA_VALIDA")
-        startActivity(intent)
+
+    private fun irCalculadora() {
+        startActivity(Intent(this, CalculadoraActivity::class.java))
         finish()
     }
 }

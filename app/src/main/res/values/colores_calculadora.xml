@@ -8,4 +8,7 @@
     <color name="calc_negro">#212121</color>
     <color name="calc_domingo_fondo">#C9D9EE</color>
     <color name="calc_domingo_texto">#6B7F99</color>
+    <color name="calc_feriado">#2E7D32</color>
+    <color name="calc_celeste">#2998F2</color>
+    <color name="calc_hint_campo">#E0F0FF</color>
 </resources>

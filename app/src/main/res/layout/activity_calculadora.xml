@@ -34,7 +34,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Calculadora de sueldo"
+                android:text="@string/calc_titulo"
                 android:textColor="@color/white"
                 android:textSize="22sp"
                 android:textStyle="bold" />
@@ -44,7 +44,7 @@
                 style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Cerrar sesión"
+                android:text="@string/calc_cerrar_sesion"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="13sp" />
@@ -54,7 +54,7 @@
             android:id="@+id/tvDatosEmpleado"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Categoría: INICIAL | Antigüedad: 0 años"
+            tools:text="Categoría: INICIAL | Antigüedad: 0 años"
             android:textColor="@color/calc_texto_encabezado"
             android:textSize="13sp" />
     </LinearLayout>
@@ -102,7 +102,7 @@
                     android:gravity="center_vertical"
                     android:paddingStart="12dp"
                     android:paddingEnd="36dp"
-                    android:text="2026"
+                    tools:text="2026"
                     android:textColor="@color/white"
                     android:textSize="16sp" />
             </LinearLayout>
@@ -113,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginBottom="6dp"
-                android:text="Tocá el día solo si faltaste:"
+                android:text="@string/calc_ayuda_marcas"
                 android:textColor="@color/calc_azul"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -141,7 +141,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Trabajado"
+                        android:text="@string/calc_leyenda_trabajado"
                         android:textColor="@color/calc_azul"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -163,7 +163,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Justificada (J)"
+                        android:text="@string/calc_leyenda_justificada"
                         android:textColor="@color/calc_azul"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -184,7 +184,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Domingo (no se marca)"
+                        android:text="@string/calc_leyenda_domingo"
                         android:textColor="@color/calc_azul"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -205,7 +205,29 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Injustificada (I)"
+                        android:text="@string/calc_leyenda_injustificada"
+                        android:textColor="@color/calc_azul"
+                        android:textSize="12sp" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnSpan="2"
+                    android:layout_columnWeight="1"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:layout_marginEnd="6dp"
+                        android:background="@color/calc_feriado" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/calc_leyenda_feriado"
                         android:textColor="@color/calc_azul"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -219,7 +241,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="Habilitar 1° quincena (días 1 al 15)"
+                android:text="@string/calc_habilitar_q1"
                 android:textColor="@color/calc_azul"
                 android:textStyle="bold"
                 app:buttonTint="@color/calc_azul" />
@@ -247,7 +269,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="12dp"
                     android:gravity="center"
-                    android:text="Justificadas: 0 · Injustificadas: 0"
+                    tools:text="Justificadas: 0 · Injustificadas: 0"
                     android:textColor="@color/calc_azul"
                     android:textSize="12sp" />
 
@@ -258,7 +280,7 @@
                     android:layout_marginBottom="8dp"
                     android:background="@drawable/fondo_campo_celeste"
                     android:gravity="center"
-                    android:hint="Horas extra al 100% (1° quincena)"
+                    android:hint="@string/calc_horas_extra_q1"
                     android:imeOptions="actionDone"
                     android:inputType="number"
                     android:maxLength="3"
@@ -269,7 +291,7 @@
                     android:id="@+id/cbApercibimientoQ1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tuvo apercibimientos en la 1° quincena"
+                    android:text="@string/calc_apercibimiento_q1"
                     android:textColor="@color/calc_azul"
                     app:buttonTint="@color/calc_azul" />
             </LinearLayout>
@@ -282,7 +304,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="false"
-                android:text="Habilitar 2° quincena (día 16 al fin de mes)"
+                android:text="@string/calc_habilitar_q2"
                 android:textColor="@color/calc_azul"
                 android:textStyle="bold"
                 app:buttonTint="@color/calc_azul" />
@@ -310,7 +332,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="12dp"
                     android:gravity="center"
-                    android:text="Justificadas: 0 · Injustificadas: 0"
+                    tools:text="Justificadas: 0 · Injustificadas: 0"
                     android:textColor="@color/calc_azul"
                     android:textSize="12sp" />
 
@@ -321,7 +343,7 @@
                     android:layout_marginBottom="8dp"
                     android:background="@drawable/fondo_campo_celeste"
                     android:gravity="center"
-                    android:hint="Horas extra al 100% (2° quincena)"
+                    android:hint="@string/calc_horas_extra_q2"
                     android:imeOptions="actionDone"
                     android:inputType="number"
                     android:maxLength="3"
@@ -332,7 +354,7 @@
                     android:id="@+id/cbApercibimientoQ2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tuvo apercibimientos en la 2° quincena"
+                    android:text="@string/calc_apercibimiento_q2"
                     android:textColor="@color/calc_azul"
                     app:buttonTint="@color/calc_azul" />
             </LinearLayout>
@@ -355,11 +377,23 @@
         android:paddingEnd="20dp"
         android:paddingBottom="12dp">
 
+        <TextView
+            android:id="@+id/tvUltimoNeto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:textColor="@color/calc_azul"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            tools:text="Último neto calculado: $ 1.234.567,00" />
+
         <Button
             android:id="@+id/btnCalcularRecibo"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:text="Calcular recibo"
+            android:text="@string/calc_calcular"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="16sp"

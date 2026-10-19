@@ -2,99 +2,104 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/raizLogin"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/calc_fondo"
     android:orientation="vertical"
-    android:background="#F2F8FF"
-    tools:context=".MainActivity"
-    tools:ignore="HardcodedText,Autofill">
+    tools:context=".MainActivity">
 
-    <!-- Franja azul superior decorativa -->
+    <!-- Franja azul superior decorativa (crece lo que mide la barra de estado) -->
     <View
+        android:id="@+id/bandaSuperior"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="#005CE6" />
+        android:background="@color/calc_azul" />
 
-    <!-- Contenedor del Login centrado -->
-    <LinearLayout
+    <!-- Contenedor del Login centrado (con scroll para pantallas chicas o teclado abierto) -->
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="36dp"
-        android:gravity="center">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
 
-        <!-- 1. Mail o Legajo -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="100dp"
-            android:gravity="center"
-            android:text="Iniciar Sesión"
-            android:textColor="#005CE6"
-            android:textSize="32sp"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/etEmailLogin"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/fondo_campo_celeste"
-            android:hint="E-mail"
-            android:textColorHint="#E0F0FF"
-            android:textColor="#FFFFFF"
-            android:gravity="center"
-            android:inputType="textEmailAddress"
-            android:layout_marginBottom="40dp" />
-
-        <!-- 2. Contraseña -->
-        <EditText
-            android:id="@+id/etPasswordLogin"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/fondo_campo_celeste"
-            android:hint="Contraseña"
-            android:textColorHint="#E0F0FF"
-            android:textColor="#FFFFFF"
-            android:gravity="center"
-            android:inputType="textPassword"
-            android:layout_marginBottom="40dp" />
-
-        <!-- Botón Ingresar -->
-        <Button
-            android:id="@+id/btnIngresar"
-            android:layout_width="220dp"
-            android:layout_height="55dp"
-            android:text="Ingresar"
-            android:textAllCaps="false"
-            android:textSize="16sp"
-            android:textColor="#FFFFFF"
-            app:backgroundTint="#005CE6" />
-
-        <!-- CheckBox chiquito para mantener sesión -->
-        <CheckBox
-            android:id="@+id/cbMantenerSesion"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minHeight="0dp"
-            android:layout_marginTop="8dp"
-            android:text="Mantener sesión iniciada"
-            android:textColor="#005CE6"
-            android:textSize="13sp"
-            android:scaleX="0.9"
-            android:scaleY="0.9"
-            app:buttonTint="#005CE6" />
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="36dp">
 
-        <!-- Botón chico para ir a Registro -->
-        <Button
-            android:id="@+id/btnIrARegistro"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="¿No tienes cuenta? Regístrate"
-            android:textAllCaps="false"
-            android:textColor="#005CE6"
-            android:padding="0dp"
-            android:layout_marginTop="24dp"
-            android:backgroundTint="#FFFFFF" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="48dp"
+                android:gravity="center"
+                android:text="@string/login_titulo"
+                android:textColor="@color/calc_azul"
+                android:textSize="32sp"
+                android:textStyle="bold" />
 
-    </LinearLayout>
+            <!-- 1. E-mail o nombre de usuario -->
+            <EditText
+                android:id="@+id/etEmailLogin"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginBottom="40dp"
+                android:autofillHints="username"
+                android:background="@drawable/fondo_campo_celeste"
+                android:gravity="center"
+                android:hint="@string/login_hint_usuario"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/white"
+                android:textColorHint="@color/calc_hint_campo" />
+
+            <!-- 2. Contraseña -->
+            <EditText
+                android:id="@+id/etPasswordLogin"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginBottom="40dp"
+                android:autofillHints="password"
+                android:background="@drawable/fondo_campo_celeste"
+                android:gravity="center"
+                android:hint="@string/login_hint_password"
+                android:inputType="textPassword"
+                android:textColor="@color/white"
+                android:textColorHint="@color/calc_hint_campo" />
+
+            <Button
+                android:id="@+id/btnIngresar"
+                android:layout_width="220dp"
+                android:layout_height="55dp"
+                android:text="@string/login_ingresar"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                app:backgroundTint="@color/calc_azul" />
+
+            <!-- CheckBox chiquito para mantener sesión -->
+            <CheckBox
+                android:id="@+id/cbMantenerSesion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:minHeight="48dp"
+                android:text="@string/login_mantener_sesion"
+                android:textColor="@color/calc_azul"
+                android:textSize="13sp"
+                app:buttonTint="@color/calc_azul" />
+
+            <!-- Botón chico para ir a Registro -->
+            <Button
+                android:id="@+id/btnIrARegistro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="@color/white"
+                android:text="@string/login_ir_registro"
+                android:textAllCaps="false"
+                android:textColor="@color/calc_azul" />
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

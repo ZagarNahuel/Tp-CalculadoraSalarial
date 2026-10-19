@@ -1,183 +1,193 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Diseño de la pantalla de Registro (franja azul, título grande y cada campo con su etiqueta arriba).
+    Los ids van en camelCase, sin puntos ni "ñ": son los que usa RegistroActivity.kt.
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/RegistroActivity"
+    android:id="@+id/raizRegistro"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
+    android:background="@color/white"
     android:orientation="vertical"
     tools:context=".RegistroActivity">
 
-    <!--  Franja azul superior decorativa  -->
+    <!-- Franja azul superior decorativa (crece lo que mide la barra de estado) -->
     <View
+        android:id="@+id/bandaSuperior"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="#005CE6" />
+        android:background="@color/calc_azul" />
 
-
-    <TextView
-        android:id="@+id/tv.Registro"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:text="Registro"
-        android:textColor="#005CE6"
-        android:textSize="40sp"
-        android:textStyle="bold" />
-
-    <!--  1. Nombre y Apellido  -->
-    <TextView
-        android:id="@+id/tv.nombreyapellido"
+    <!-- El formulario se desplaza: con el teclado abierto no entra en una pantalla chica -->
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="15dp"
-        android:text="Nombre y Apellido/s"
-        android:textSize="20sp">
-    </TextView>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
 
-    <EditText
-        android:id="@+id/et.nombreyapellido"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:textSize="20sp">
-    </EditText>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingBottom="24dp">
 
-    <!--  2. Mail  -->
-    <TextView
-        android:id="@+id/tv.email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:text="E-mail"
-        android:textSize="20sp">
-    </TextView>
+            <TextView
+                android:id="@+id/tvTituloRegistro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="@string/reg_titulo"
+                android:textColor="@color/calc_azul"
+                android:textSize="40sp"
+                android:textStyle="bold" />
 
-    <EditText
-        android:id="@+id/et.email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:textSize="20sp"
-        android:inputType="textEmailAddress">
-    </EditText>
+            <!-- 1. Nombre y Apellido -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:labelFor="@id/etNombreRegistro"
+                android:text="@string/reg_label_nombre"
+                android:textSize="20sp" />
 
-    <!--  3. Nombre de Usuario  -->
+            <EditText
+                android:id="@+id/etNombreRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="name"
+                android:inputType="textPersonName|textCapWords"
+                android:minHeight="48dp"
+                android:textSize="20sp" />
 
-    <TextView
-        android:id="@+id/tv.nombredeusuario"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:text="Nombre de Usuario"
-        android:textSize="20sp">
-    </TextView>
+            <!-- 2. Mail -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:labelFor="@id/etEmailRegistro"
+                android:text="@string/reg_label_email"
+                android:textSize="20sp" />
 
-    <EditText
-        android:id="@+id/et.nombredeusuario"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:textSize="20sp">
-    </EditText>
+            <EditText
+                android:id="@+id/etEmailRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="emailAddress"
+                android:inputType="textEmailAddress"
+                android:minHeight="48dp"
+                android:textSize="20sp" />
 
-    <!--  4. Contraseña  -->
-    <TextView
-        android:id="@+id/tv.contraseña"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:text="Contraseña"
-        android:textSize="20sp">
-    </TextView>
+            <!-- 3. Nombre de usuario -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:labelFor="@id/etUsuarioRegistro"
+                android:text="@string/reg_label_usuario"
+                android:textSize="20sp" />
 
-    <EditText
-        android:id="@+id/et.contraseña"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:textSize="20sp">
-    </EditText>
+            <EditText
+                android:id="@+id/etUsuarioRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="username"
+                android:inputType="text"
+                android:minHeight="48dp"
+                android:textSize="20sp" />
 
-    <!--  5. Repetir Contraseña  -->
-    <TextView
-        android:id="@+id/tv.repetircontrasena"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:text="Repetir Contraseña"
-        android:textSize="20sp">
-    </TextView>
+            <!-- 4. Contraseña -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:labelFor="@id/etPasswordRegistro"
+                android:text="@string/reg_label_password"
+                android:textSize="20sp" />
 
-    <EditText
-        android:id="@+id/et.repetircontraseña"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_marginHorizontal="20dp"
-        android:textSize="20sp">
-    </EditText>
+            <EditText
+                android:id="@+id/etPasswordRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="newPassword"
+                android:inputType="textPassword"
+                android:minHeight="48dp"
+                android:textSize="20sp" />
 
-    <!--  6. Selector de Categoría (Spinner)  -->
-    <TextView
-        android:id="@+id/tv.categoria"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:text="Categoria"
-        android:textSize="20sp">
-    </TextView>
+            <!-- 5. Repetir contraseña -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:labelFor="@id/etConfirmPasswordRegistro"
+                android:text="@string/reg_label_confirmar"
+                android:textSize="20sp" />
 
-    <Spinner
-        android:id="@+id/sp.categoria"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:entries="@array/lista_categorias"
-        android:paddingHorizontal="16dp">
-    </Spinner>
+            <EditText
+                android:id="@+id/etConfirmPasswordRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="newPassword"
+                android:inputType="textPassword"
+                android:minHeight="48dp"
+                android:textSize="20sp" />
 
-    <!--  7 Años de Antigüedad (NUEVO)  -->>
-    <TextView
-        android:id="@+id/tv.antiguedad"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:text="Antiguedad"
-        android:textSize="20sp">
-    </TextView>
+            <!-- 6. Selector de categoría (Spinner) -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:labelFor="@id/spCategoriaRegistro"
+                android:text="@string/reg_label_categoria"
+                android:textSize="20sp" />
 
-    <EditText
-        android:id="@+id/et.antiguedad"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginBottom="40dp"
-        android:hint="En años"
-        android:inputType="number"
-        android:textSize="20sp">
-    </EditText>
+            <Spinner
+                android:id="@+id/spCategoriaRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/lista_categorias"
+                android:minHeight="48dp" />
 
+            <!-- 7. Años de antigüedad -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:labelFor="@id/etAntiguedadRegistro"
+                android:text="@string/reg_label_antiguedad"
+                android:textSize="20sp" />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="60dp"
-        android:layout_marginBottom="20dp"
-        android:background="#005CE6"
-        android:text="Crear Usuario"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        android:textStyle="bold">
+            <EditText
+                android:id="@+id/etAntiguedadRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                android:hint="@string/reg_hint_antiguedad"
+                android:importantForAutofill="no"
+                android:inputType="number"
+                android:maxLength="2"
+                android:minHeight="48dp"
+                android:textSize="20sp" />
 
+            <Button
+                android:id="@+id/btnRegistrar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="40dp"
+                android:layout_marginBottom="12dp"
+                android:text="@string/reg_crear"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/calc_azul" />
 
-    </Button>
-
-    <TextView
-        android:id="@+id/textView.nombredeusuario"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:gravity="center"
-        android:text="¿ya tienes una cuenta? Inicia sesión"
-        android:textColor="#005CE6"
-        android:textSize="15sp">
+            <TextView
+                android:id="@+id/tvVolverALogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:minHeight="48dp"
+                android:text="@string/reg_volver_login"
+                android:textColor="@color/calc_azul"
+                android:textSize="15sp" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

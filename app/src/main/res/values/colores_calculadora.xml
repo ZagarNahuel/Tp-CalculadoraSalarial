@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="calc_azul">#005CE6</color>
+    <color name="calc_fondo">#F2F8FF</color>
+    <color name="calc_contenedor">#E3F0FF</color>
+    <color name="calc_texto_encabezado">#DCEBFF</color>
+    <color name="calc_rojo">#E53935</color>
+    <color name="calc_negro">#212121</color>
+    <color name="calc_domingo_fondo">#C9D9EE</color>
+    <color name="calc_domingo_texto">#6B7F99</color>
+</resources>

@@ -8,11 +8,6 @@ import android.widget.Button
 import android.widget.TextView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-/**
- * Fragment (panel inferior) que explica cómo se calculó un concepto del recibo.
- * Lo abre ReciboActivity al tocar una fila de la tabla. El texto ya viene armado con
- * los números reales de la consulta (ver [ExplicacionRecibo]).
- */
 class ExplicacionConceptoFragment : BottomSheetDialogFragment() {
 
     companion object {

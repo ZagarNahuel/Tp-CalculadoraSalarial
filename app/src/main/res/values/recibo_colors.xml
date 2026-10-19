@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Prefijo recibo_ para no pisar la paleta de otras pantallas. -->
+    <!-- Colores del Recibo. Empiezan con recibo_ para no mezclarse con los de la Calculadora. -->
+
     <color name="recibo_fondo_pantalla">#F5F7FB</color>
     <color name="recibo_blanco">#FFFFFF</color>
     <color name="recibo_azul">#2B6EF6</color>

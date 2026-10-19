@@ -1,23 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/raizCalculadora"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F2F8FF"
-    tools:context=".CalculadoraActivity"
-    tools:ignore="HardcodedText,Autofill">
+    android:background="@color/calc_fondo"
+    android:orientation="vertical"
+    tools:context=".CalculadoraActivity">
 
     <LinearLayout
+        android:id="@+id/encabezadoCalc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:background="@color/calc_azul"
+        android:orientation="vertical"
+        android:paddingStart="12dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="16dp">
 
-        <!-- Franja azul superior decorativa -->
-        <View
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="#005CE6" />
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnAtras"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="0dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="12dp"
+                android:text="@string/calc_atras"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:icon="@drawable/ic_flecha_atras"
+                app:iconGravity="textStart"
+                app:iconPadding="6dp"
+                app:iconTint="@color/white" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/calc_titulo"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvNombreEmpleado"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="6dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/white"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            tools:text="Nahuel Zagar" />
+
+        <TextView
+            android:id="@+id/tvDatosEmpleado"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="2dp"
+            android:textColor="@color/calc_texto_encabezado"
+            android:textSize="13sp"
+            tools:text="Categoría inicial · 1 año de antigüedad" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -25,28 +88,6 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Calculadora de Sueldo"
-                android:textColor="#005CE6"
-                android:textSize="26sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvDatosEmpleado"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="20dp"
-                android:gravity="center"
-                android:text="Categoría: INICIAL | Antigüedad: 0 años"
-                android:textColor="#2998F2"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
-            <!-- Selector de Mes y Año -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -57,53 +98,162 @@
                     android:id="@+id/spMes"
                     android:layout_width="0dp"
                     android:layout_height="48dp"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginEnd="12dp"
                     android:layout_weight="1"
-                    android:background="@drawable/fondo_campo_celeste"
-                    android:entries="@array/lista_meses"
-                    android:paddingHorizontal="12dp" />
+                    android:background="@drawable/fondo_spinner_celeste"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="40dp"
+                    android:popupBackground="@color/white" />
 
-                <EditText
-                    android:id="@+id/etAnio"
-                    android:layout_width="110dp"
+                <TextView
+                    android:id="@+id/tvAnio"
+                    android:layout_width="120dp"
                     android:layout_height="48dp"
-                    android:background="@drawable/fondo_campo_celeste"
-                    android:gravity="center"
-                    android:inputType="number"
-                    android:text="2026"
-                    android:textColor="#FFFFFF" />
+                    android:background="@drawable/fondo_spinner_celeste"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="40dp"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    tools:text="2026" />
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/fondo_tarjeta_blanca"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="14dp">
 
-            <!-- ========================================== -->
-            <!-- QUINCENA 1 (Días 1 al 15 en Blanco)        -->
-            <!-- ========================================== -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:gravity="center"
+                    android:text="@string/calc_ayuda_marcas"
+                    android:textColor="@color/calc_azul"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <GridLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:columnCount="2">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="28dp"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="@drawable/cuadrito_leyenda_blanco" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/calc_leyenda_trabajado"
+                            android:textColor="@color/calc_azul"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="0dp"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="@drawable/cuadrito_leyenda"
+                            android:backgroundTint="@color/calc_rojo" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/calc_leyenda_justificada"
+                            android:textColor="@color/calc_azul"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="28dp"
+                        android:layout_marginBottom="0dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="@drawable/cuadrito_leyenda"
+                            android:backgroundTint="@color/calc_negro" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/calc_leyenda_injustificada"
+                            android:textColor="@color/calc_azul"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="0dp"
+                        android:layout_marginBottom="0dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="@drawable/cuadrito_leyenda"
+                            android:backgroundTint="@color/calc_feriado" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/calc_leyenda_feriado"
+                            android:textColor="@color/calc_azul"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+</GridLayout>
+            </LinearLayout>
+
             <CheckBox
                 android:id="@+id/cbHabilitarQ1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="Habilitar 1° Quincena (Días 1 al 15)"
-                android:textColor="#005CE6"
+                android:text="@string/calc_habilitar_q1"
+                android:textColor="@color/calc_azul"
                 android:textStyle="bold"
-                app:buttonTint="#005CE6" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="6dp"
-                android:text="Tocá el día solo si faltaste:"
-                android:textColor="#005CE6"
-                android:textSize="12sp"
-                android:textStyle="bold" />
+                app:buttonTint="@color/calc_azul" />
 
             <LinearLayout
                 android:id="@+id/layoutContenedorQ1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
-                android:background="#E3F0FF"
+                android:background="@drawable/fondo_quincena"
                 android:orientation="vertical"
                 android:padding="12dp">
 
@@ -111,264 +261,58 @@
                     android:id="@+id/gridDiasQ1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:columnCount="5">
+                    android:columnCount="7" />
 
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="3dp"
-                        android:padding="0dp"
-                        android:text="1"
-                        android:textColor="#005CE6"
-                        app:backgroundTint="#FFFFFF" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="3dp"
-                        android:padding="0dp"
-                        android:text="2"
-                        android:textColor="#005CE6"
-                        app:backgroundTint="#FFFFFF" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="3dp"
-                        android:padding="0dp"
-                        android:text="3"
-                        android:textColor="#005CE6"
-                        app:backgroundTint="#FFFFFF" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="3dp"
-                        android:padding="0dp"
-                        android:text="4"
-                        android:textColor="#005CE6"
-                        app:backgroundTint="#FFFFFF" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="3dp"
-                        android:padding="0dp"
-                        android:text="5"
-                        android:textColor="#005CE6"
-                        app:backgroundTint="#FFFFFF" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="3dp"
-                        android:padding="0dp"
-                        android:text="6"
-                        android:textColor="#005CE6"
-                        app:backgroundTint="#FFFFFF" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="3dp"
-                        android:padding="0dp"
-                        android:text="7"
-                        android:textColor="#005CE6"
-                        app:backgroundTint="#FFFFFF" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="3dp"
-                        android:padding="0dp"
-                        android:text="8"
-                        android:textColor="#005CE6"
-                        app:backgroundTint="#FFFFFF" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="3dp"
-                        android:padding="0dp"
-                        android:text="9"
-                        android:textColor="#005CE6"
-                        app:backgroundTint="#FFFFFF" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="3dp"
-                        android:padding="0dp"
-                        android:text="10"
-                        android:textColor="#005CE6"
-                        app:backgroundTint="#FFFFFF" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="3dp"
-                        android:padding="0dp"
-                        android:text="11"
-                        android:textColor="#005CE6"
-                        app:backgroundTint="#FFFFFF" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="3dp"
-                        android:padding="0dp"
-                        android:text="12"
-                        android:textColor="#005CE6"
-                        app:backgroundTint="#FFFFFF" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="3dp"
-                        android:padding="0dp"
-                        android:text="13"
-                        android:textColor="#005CE6"
-                        app:backgroundTint="#FFFFFF" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="3dp"
-                        android:padding="0dp"
-                        android:text="14"
-                        android:textColor="#005CE6"
-                        app:backgroundTint="#FFFFFF" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="3dp"
-                        android:padding="0dp"
-                        android:text="15"
-                        android:textColor="#005CE6"
-                        app:backgroundTint="#FFFFFF" />
-                </GridLayout>
-                <!-- Leyenda visual armónica (Entre el calendario y las horas extra) -->
-                <LinearLayout
+                <TextView
+                    android:id="@+id/tvResumenQ1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:layout_marginBottom="12dp"
                     android:gravity="center"
-                    android:orientation="vertical">
-
-
-                    <!-- Fila con los 3 cuadraditos de color -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="horizontal">
-
-                        <!-- Cuadradito Blanco -->
-                        <View
-                            android:layout_width="14dp"
-                            android:layout_height="14dp"
-                            android:layout_marginEnd="4dp"
-                            android:background="#FFFFFF" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="14dp"
-                            android:text="Trabajado"
-                            android:textColor="#005CE6"
-                            android:textSize="11sp" />
-
-                        <!-- Cuadradito Rojo -->
-                        <View
-                            android:layout_width="14dp"
-                            android:layout_height="14dp"
-                            android:layout_marginEnd="4dp"
-                            android:background="#E53935" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="14dp"
-                            android:text="Justificada"
-                            android:textColor="#005CE6"
-                            android:textSize="11sp" />
-
-                        <!-- Cuadradito Negro -->
-                        <View
-                            android:layout_width="14dp"
-                            android:layout_height="14dp"
-                            android:layout_marginEnd="4dp"
-                            android:background="#212121" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Injustificada"
-                            android:textColor="#005CE6"
-                            android:textSize="11sp" />
-
-                    </LinearLayout>
-                </LinearLayout>
-
+                    tools:text="Justificadas: 0 · Injustificadas: 0"
+                    android:textColor="@color/calc_azul"
+                    android:textSize="12sp" />
 
                 <EditText
                     android:id="@+id/etHorasExtraQ1"
                     android:layout_width="match_parent"
-                    android:layout_height="45dp"
+                    android:layout_height="48dp"
                     android:layout_marginBottom="8dp"
                     android:background="@drawable/fondo_campo_celeste"
                     android:gravity="center"
-                    android:hint="Horas extra al 100% (1° Quincena)"
+                    android:hint="@string/calc_horas_extra_q1"
+                    android:imeOptions="actionDone"
                     android:inputType="number"
-                    android:textColor="#FFFFFF"
-                    android:textColorHint="#E0F0FF" />
+                    android:maxLength="3"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/calc_fondo" />
 
                 <CheckBox
                     android:id="@+id/cbApercibimientoQ1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tuvo apercibimientos en 1° Quincena"
-                    android:textColor="#005CE6"
-                    app:buttonTint="#005CE6" />
+                    android:text="@string/calc_apercibimiento_q1"
+                    android:textColor="@color/calc_azul"
+                    app:buttonTint="@color/calc_azul" />
             </LinearLayout>
 
-            <!-- ========================================== -->
-            <!-- QUINCENA 2 (Días 16 al 31 en Blanco)       -->
-            <!-- ========================================== -->
             <CheckBox
                 android:id="@+id/cbHabilitarQ2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="false"
-                android:text="Habilitar 2° Quincena (Días 16 al Fin)"
-                android:textColor="#005CE6"
+                android:text="@string/calc_habilitar_q2"
+                android:textColor="@color/calc_azul"
                 android:textStyle="bold"
-                app:buttonTint="#005CE6" />
+                app:buttonTint="@color/calc_azul" />
 
             <LinearLayout
                 android:id="@+id/layoutContenedorQ2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
                 android:alpha="0.35"
-                android:background="#E3F0FF"
+                android:background="@drawable/fondo_quincena"
                 android:orientation="vertical"
                 android:padding="12dp">
 
@@ -376,283 +320,78 @@
                     android:id="@+id/gridDiasQ2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:columnCount="5">
+                    android:columnCount="7" />
 
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="3dp"
-                        android:padding="0dp"
-                        android:text="16"
-                        android:textColor="#005CE6"
-                        app:backgroundTint="#FFFFFF" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="3dp"
-                        android:padding="0dp"
-                        android:text="17"
-                        android:textColor="#005CE6"
-                        app:backgroundTint="#FFFFFF" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="3dp"
-                        android:padding="0dp"
-                        android:text="18"
-                        android:textColor="#005CE6"
-                        app:backgroundTint="#FFFFFF" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="3dp"
-                        android:padding="0dp"
-                        android:text="19"
-                        android:textColor="#005CE6"
-                        app:backgroundTint="#FFFFFF" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="3dp"
-                        android:padding="0dp"
-                        android:text="20"
-                        android:textColor="#005CE6"
-                        app:backgroundTint="#FFFFFF" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="3dp"
-                        android:padding="0dp"
-                        android:text="21"
-                        android:textColor="#005CE6"
-                        app:backgroundTint="#FFFFFF" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="3dp"
-                        android:padding="0dp"
-                        android:text="22"
-                        android:textColor="#005CE6"
-                        app:backgroundTint="#FFFFFF" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="3dp"
-                        android:padding="0dp"
-                        android:text="23"
-                        android:textColor="#005CE6"
-                        app:backgroundTint="#FFFFFF" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="3dp"
-                        android:padding="0dp"
-                        android:text="24"
-                        android:textColor="#005CE6"
-                        app:backgroundTint="#FFFFFF" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="3dp"
-                        android:padding="0dp"
-                        android:text="25"
-                        android:textColor="#005CE6"
-                        app:backgroundTint="#FFFFFF" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="3dp"
-                        android:padding="0dp"
-                        android:text="26"
-                        android:textColor="#005CE6"
-                        app:backgroundTint="#FFFFFF" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="3dp"
-                        android:padding="0dp"
-                        android:text="27"
-                        android:textColor="#005CE6"
-                        app:backgroundTint="#FFFFFF" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="3dp"
-                        android:padding="0dp"
-                        android:text="28"
-                        android:textColor="#005CE6"
-                        app:backgroundTint="#FFFFFF" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="3dp"
-                        android:padding="0dp"
-                        android:text="29"
-                        android:textColor="#005CE6"
-                        app:backgroundTint="#FFFFFF" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="3dp"
-                        android:padding="0dp"
-                        android:text="30"
-                        android:textColor="#005CE6"
-                        app:backgroundTint="#FFFFFF" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="3dp"
-                        android:padding="0dp"
-                        android:text="31"
-                        android:textColor="#005CE6"
-                        app:backgroundTint="#FFFFFF" />
-                </GridLayout>
-                <!-- Leyenda visual armónica (Entre el calendario y las horas extra) -->
-                <LinearLayout
+                <TextView
+                    android:id="@+id/tvResumenQ2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:layout_marginBottom="12dp"
                     android:gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="6dp"
-                        android:text="Tocá el día solo si faltaste:"
-                        android:textColor="#005CE6"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-
-                    <!-- Fila con los 3 cuadraditos de color -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="horizontal">
-
-                        <!-- Cuadradito Blanco -->
-                        <View
-                            android:layout_width="14dp"
-                            android:layout_height="14dp"
-                            android:layout_marginEnd="4dp"
-                            android:background="#FFFFFF" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="14dp"
-                            android:text="Trabajado"
-                            android:textColor="#005CE6"
-                            android:textSize="11sp" />
-
-                        <!-- Cuadradito Rojo -->
-                        <View
-                            android:layout_width="14dp"
-                            android:layout_height="14dp"
-                            android:layout_marginEnd="4dp"
-                            android:background="#E53935" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="14dp"
-                            android:text="Justificada"
-                            android:textColor="#005CE6"
-                            android:textSize="11sp" />
-
-                        <!-- Cuadradito Negro -->
-                        <View
-                            android:layout_width="14dp"
-                            android:layout_height="14dp"
-                            android:layout_marginEnd="4dp"
-                            android:background="#212121" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Injustificada"
-                            android:textColor="#005CE6"
-                            android:textSize="11sp" />
-
-                    </LinearLayout>
-                </LinearLayout>
+                    tools:text="Justificadas: 0 · Injustificadas: 0"
+                    android:textColor="@color/calc_azul"
+                    android:textSize="12sp" />
 
                 <EditText
                     android:id="@+id/etHorasExtraQ2"
                     android:layout_width="match_parent"
-                    android:layout_height="45dp"
+                    android:layout_height="48dp"
                     android:layout_marginBottom="8dp"
                     android:background="@drawable/fondo_campo_celeste"
                     android:gravity="center"
-                    android:hint="Horas extra al 100% (2° Quincena)"
+                    android:hint="@string/calc_horas_extra_q2"
+                    android:imeOptions="actionDone"
                     android:inputType="number"
-                    android:textColor="#FFFFFF"
-                    android:textColorHint="#E0F0FF" />
+                    android:maxLength="3"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/calc_fondo" />
 
                 <CheckBox
                     android:id="@+id/cbApercibimientoQ2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tuvo apercibimientos en 2° Quincena"
-                    android:textColor="#005CE6"
-                    app:buttonTint="#005CE6" />
+                    android:text="@string/calc_apercibimiento_q2"
+                    android:textColor="@color/calc_azul"
+                    app:buttonTint="@color/calc_azul" />
             </LinearLayout>
 
-            <Button
-                android:id="@+id/btnCalcularRecibo"
-                android:layout_width="240dp"
-                android:layout_height="55dp"
-                android:layout_gravity="center"
-                android:text="Calcular Recibo"
-                android:textAllCaps="false"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"
-                app:backgroundTint="#005CE6" />
-
-            <Button
-                android:id="@+id/btnCerrarSesion"
-                android:layout_width="240dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:text="Cerrar Sesion"
-                android:textAllCaps="false"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"
-                app:backgroundTint="#005CE6" />
-
         </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/barraInferior"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:elevation="8dp"
+        android:orientation="vertical"
+        android:paddingStart="20dp"
+        android:paddingTop="12dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="12dp">
+
+        <TextView
+            android:id="@+id/tvUltimoNeto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:textColor="@color/calc_azul"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            tools:text="Último neto calculado: $ 1.234.567,00" />
+
+        <Button
+            android:id="@+id/btnCalcularRecibo"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:text="@string/calc_calcular"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:backgroundTint="@color/calc_azul" />
     </LinearLayout>
-</ScrollView>
+
+</LinearLayout>

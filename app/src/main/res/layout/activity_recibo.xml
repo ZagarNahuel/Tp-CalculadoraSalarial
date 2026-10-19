@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/raizRecibo"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/recibo_fondo_pantalla"
@@ -11,7 +12,6 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- ID heredado: NO cambiar sin actualizar Kotlin. -->
         <TextView
             android:id="@+id/tvCambiarCategoria"
             android:layout_width="wrap_content"
@@ -19,7 +19,7 @@
             android:clickable="true"
             android:focusable="true"
             android:padding="12dp"
-            android:text="@string/recibo_volver"
+            android:text="@string/recibo_cambiar_categoria"
             android:textColor="@color/recibo_azul"
             android:textSize="14sp"
             android:textStyle="bold" />
@@ -36,7 +36,6 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <!-- Resumen superior: las cifras salen del MotorLiquidacion; este XML no calcula. -->
         <LinearLayout
             android:id="@+id/cardResumenRecibo"
             android:layout_width="match_parent"
@@ -93,11 +92,21 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/tvPistaConceptos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/recibo_pista_conceptos"
+            android:textColor="@color/recibo_azul"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
         <CheckBox
             android:id="@+id/cbMostrarDetalleRecibo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="4dp"
             android:checked="true"
             android:text="@string/recibo_mostrar_desglose"
             android:textColor="@color/recibo_texto" />
@@ -224,7 +233,6 @@
                 android:textSize="12sp" />
         </LinearLayout>
 
-        <!-- Opciones de valor agregado del TP, sin bibliotecas externas. -->
         <LinearLayout
             android:id="@+id/cardHerramientasRecibo"
             android:layout_width="match_parent"
@@ -253,13 +261,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/recibo_boton_compartir"
-                android:textAllCaps="false" />
-
-            <Button
-                android:id="@+id/btnAyudaRecibo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/recibo_boton_ayuda"
                 android:textAllCaps="false" />
         </LinearLayout>
 

@@ -13,3 +13,8 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Archivos personales del IDE y generados (cada integrante tiene los suyos y generan conflictos)
+.idea/
+.kotlin/
+*.log

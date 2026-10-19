@@ -2,33 +2,113 @@ package com.example.calculadorasalarial
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Patterns
 import android.widget.Button
+import android.widget.EditText
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.calculadorasalarial.CalculadoraActivity
-import com.example.calculadorasalarial.R
 
+// Pantalla de registro: revisa los datos y guarda la cuenta en el celular.
+// La categoría y la antigüedad que se eligen acá son las que usan después la calculadora y el recibo.
 class RegistroActivity : AppCompatActivity() {
+    companion object {
+        const val EXTRA_EMAIL_REGISTRADO = "EMAIL_REGISTRADO"
+        private const val LARGO_MINIMO_PASSWORD = 8
+        private const val ANTIGUEDAD_MAXIMA = 60
+        private val REGEX_USUARIO = Regex("^[A-Za-z0-9._-]{3,20}$")
+    }
+
+    private lateinit var etNombre: EditText
+    private lateinit var etEmail: EditText
+    private lateinit var etUsuario: EditText
+    private lateinit var etPassword: EditText
+    private lateinit var etConfirmar: EditText
+    private lateinit var spCategoria: Spinner
+    private lateinit var etAntiguedad: EditText
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_registro)
+        ajustarBordesDelSistema(findViewById(R.id.raizRegistro), findViewById(R.id.bandaSuperior))
 
-        // 1. Vincular elementos del XML
-        val spCategoria = findViewById<Spinner>(R.id.spCategoriaRegistro)
+        val repositorio = RepositorioUsuarios(this)
+
+        etNombre = findViewById(R.id.etNombreRegistro)
+        etEmail = findViewById(R.id.etEmailRegistro)
+        etUsuario = findViewById(R.id.etUsuarioRegistro)
+        etPassword = findViewById(R.id.etPasswordRegistro)
+        etConfirmar = findViewById(R.id.etConfirmPasswordRegistro)
+        spCategoria = findViewById(R.id.spCategoriaRegistro)
+        etAntiguedad = findViewById(R.id.etAntiguedadRegistro)
         val btnRegistrar = findViewById<Button>(R.id.btnRegistrar)
-        val tvVolverALogin = findViewById<Button>(R.id.tvVolverALogin)
+        val btnVolverALogin = findViewById<Button>(R.id.tvVolverALogin)
 
-        // 2. Al tocar "Crear cuenta", pasamos a la Calculadora enviando la categoría elegida
+        // La lista de categorías tiene el mismo estilo que el selector de mes.
+        spCategoria.adapter = adaptadorSpinnerBlanco(resources.getStringArray(R.array.lista_categorias))
+
+        // Cada contraseña tiene su ojo para verla u ocultarla.
+        configurarOjoContrasena(etPassword, findViewById(R.id.ivOjoPassword))
+        configurarOjoContrasena(etConfirmar, findViewById(R.id.ivOjoConfirmar))
+
         btnRegistrar.setOnClickListener {
-            val categoriaElegida = spCategoria.selectedItem.toString()
-            val intent = Intent(this, CalculadoraActivity::class.java)
-            intent.putExtra("CATEGORIA", categoriaElegida)
-            startActivity(intent)
+            if (!datosValidos()) return@setOnClickListener
+
+            val email = etEmail.text.toString().trim()
+            val error = repositorio.registrar(
+                nombre = etNombre.text.toString(),
+                email = email,
+                usuario = etUsuario.text.toString(),
+                password = etPassword.text.toString(),
+                categoria = spCategoria.selectedItem.toString(),
+                antiguedad = etAntiguedad.text.toString().trim().toInt()
+            )
+
+            when (error) {
+                ErrorRegistro.EMAIL_REPETIDO -> marcarError(etEmail, R.string.reg_error_email_repetido)
+                ErrorRegistro.USUARIO_REPETIDO -> marcarError(etUsuario, R.string.reg_error_usuario_repetido)
+                null -> {
+                    // Volvemos al login con el e-mail ya escrito.
+                    setResult(RESULT_OK, Intent().putExtra(EXTRA_EMAIL_REGISTRADO, email))
+                    finish()
+                }
+            }
         }
 
-        // 3. Volver al Login
-        tvVolverALogin.setOnClickListener {
-            finish()
+        btnVolverALogin.setOnClickListener { finish() }
+    }
+
+    // Revisa todos los campos y deja el cursor en el primero que está mal.
+    private fun datosValidos(): Boolean {
+        var primerError: EditText? = null
+        fun fallo(campo: EditText, mensaje: Int) {
+            campo.error = getString(mensaje)
+            if (primerError == null) primerError = campo
         }
+
+        val email = etEmail.text.toString().trim()
+        val password = etPassword.text.toString()
+        val antiguedad = etAntiguedad.text.toString().trim().toIntOrNull()
+
+        if (etNombre.text.toString().isBlank()) fallo(etNombre, R.string.reg_error_nombre)
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) fallo(etEmail, R.string.reg_error_email)
+        if (!REGEX_USUARIO.matches(etUsuario.text.toString().trim())) fallo(etUsuario, R.string.reg_error_usuario)
+        if (password.length < LARGO_MINIMO_PASSWORD) fallo(etPassword, R.string.reg_error_password)
+        if (etConfirmar.text.toString() != password) fallo(etConfirmar, R.string.reg_error_confirmar)
+        if (antiguedad == null || antiguedad !in 0..ANTIGUEDAD_MAXIMA) fallo(etAntiguedad, R.string.reg_error_antiguedad)
+
+        val categoriaValida = spCategoria.selectedItemPosition > 0 &&
+            MotorLiquidacion.escalaPara(spCategoria.selectedItem.toString()) != null
+        if (!categoriaValida) {
+            Toast.makeText(this, R.string.reg_error_categoria, Toast.LENGTH_SHORT).show()
+        }
+
+        primerError?.requestFocus()
+        return primerError == null && categoriaValida
+    }
+
+    private fun marcarError(campo: EditText, mensaje: Int) {
+        campo.error = getString(mensaje)
+        campo.requestFocus()
     }
 }

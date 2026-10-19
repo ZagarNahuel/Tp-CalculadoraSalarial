@@ -1,6 +1,6 @@
 package com.example.calculadorasalarial
 
-import java.util.Calendar
+import kotlin.math.roundToLong
 
 data class EscalaCategoria(
     val valorHora: Double,
@@ -21,7 +21,7 @@ data class ResultadoQuincena(
     val premioPuntualidad: Double,
     val premioAsistencia: Double,
     val premioPerfecto: Double,
-    val antiguedadPct: Double,
+    val antiguedadPct: Int,
     val antiguedadValor: Double,
     val viaticosDias: Int,
     val viaticosValor: Double,
@@ -38,84 +38,77 @@ data class ResultadoQuincena(
     val totalNeto: Double
 )
 
+// Acá están todas las reglas del sueldo. Si el convenio cambia, se modifica solo este archivo.
 object MotorLiquidacion {
+    const val ESTADO_TRABAJADO = 0 // día trabajado (blanco)
+    const val ESTADO_JUSTIFICADA = 1 // falta justificada (rojo): se paga, pero sin viático
+    const val ESTADO_INJUSTIFICADA = 2 // falta injustificada (negro): no se paga
+    const val ESTADO_FERIADO = 3 // feriado trabajado (verde): se paga doble. Lo marca el usuario manteniendo presionado el día
+    const val ESTADO_MAXIMO = ESTADO_FERIADO
 
-    // Escalas por categoría (coinciden exactamente con tu strings.xml)
-    private val VALORES_DICIEMBRE = mapOf(
-        "CATEGORIA INICIAL" to EscalaCategoria(3873.0, 34187.0, 35710.0, 50409.0, 2276.0, 1652.0),
-        "CATEGORIA 1" to EscalaCategoria(4314.0, 35397.0, 36926.0, 52266.0, 2276.0, 1652.0),
-        "CATEGORIA 2" to EscalaCategoria(4506.0, 36267.0, 40075.0, 54291.0, 2276.0, 1652.0),
-        "CATEGORIA 3" to EscalaCategoria(4715.0, 37078.0, 40984.0, 55792.0, 2276.0, 1652.0),
-        "CATEGORIA 4" to EscalaCategoria(4920.0, 37943.0, 42433.0, 57405.0, 2276.0, 1652.0)
+    private const val HORAS_JORNADA = 8
+    private const val HORAS_SABADO_NORMALES = 6 // el sábado son 6 horas simples y 2 al 100%
+    private const val HORAS_SABADO_AL_100 = 2
+
+    // Escalas de cada categoría, vigentes desde el 1° de noviembre de 2026.
+    // Se usa siempre la más reciente, sin importar el mes que se liquide.
+    // Orden: valor hora, premio asistencia, premio puntualidad, asistencia perfecta, viático y refrigerio.
+    private val ESCALAS = linkedMapOf(
+        "CATEGORIA INICIAL" to EscalaCategoria(5379.0, 47332.0, 49174.0, 71015.0, 3123.0, 2366.0),
+        "CATEGORIA 1" to EscalaCategoria(5888.0, 48793.0, 50642.0, 73258.0, 3123.0, 2366.0),
+        "CATEGORIA 2" to EscalaCategoria(6120.0, 49847.0, 54450.0, 75708.0, 3123.0, 2366.0),
+        "CATEGORIA 3" to EscalaCategoria(6374.0, 50826.0, 55548.0, 77521.0, 3123.0, 2366.0),
+        "CATEGORIA 4" to EscalaCategoria(6620.0, 51871.0, 57300.0, 79470.0, 3123.0, 2366.0)
     )
 
-    // Porcentajes de descuentos de ley y sindicales
-    private const val DESC_JUBILACION = 0.109961
-    private const val DESC_19032 = 0.029985
-    private const val DESC_23660 = 0.029985
-    private const val DESC_TURISMO = 0.009985
-    private const val DESC_SOLIDARIO = 0.019970
+    val categorias: List<String> get() = ESCALAS.keys.toList()
 
-    // Feriados nacionales (Mes 1..12, Día)
-    private val FERIADOS = setOf(
-        Pair(1, 1), Pair(3, 24), Pair(4, 2), Pair(4, 3),
-        Pair(5, 1), Pair(5, 25), Pair(6, 17), Pair(6, 20),
-        Pair(7, 9), Pair(8, 17), Pair(9, 22),
-        Pair(10, 12), Pair(11, 20),
-        Pair(12, 8), Pair(12, 25)
-    )
+    fun escalaPara(categoria: String): EscalaCategoria? = ESCALAS[categoria]
 
-    // Regla de antigüedad: 0 años = 0% | 1 a 4 años = 4% | >4 años = 1% adicional por año
-    private fun obtenerPorcentajeAntiguedad(anios: Int): Double {
-        return when {
-            anios <= 0 -> 0.0
-            anios in 1..4 -> 0.04
-            else -> anios * 0.01
-        }
+    fun nombreVisible(categoria: String): String =
+        categoria.lowercase().replaceFirstChar { it.uppercase() }.replace("Categoria", "Categoría")
+
+    // Porcentajes que se descuentan de lo remunerativo.
+    const val DESC_JUBILACION = 0.109961
+    const val DESC_19032 = 0.029985
+    const val DESC_23660 = 0.029985
+    const val DESC_TURISMO = 0.009985
+    const val DESC_SOLIDARIO = 0.019970
+
+    // Antigüedad (años completos): menos de 1 año no paga, de 1 a 4 años es 4%, desde 5 años es 1% por año.
+    private fun obtenerPorcentajeAntiguedad(anios: Int): Int = when {
+        anios <= 0 -> 0
+        anios in 1..4 -> 4
+        else -> anios
     }
 
-    private fun obtenerDiaSemana(dia: Int, mes: Int, anio: Int): Int {
-        val cal = Calendar.getInstance()
-        cal.set(anio, mes - 1, dia) // En Calendar de Android, Enero es 0
-        return cal.get(Calendar.DAY_OF_WEEK)
-    }
+    // Redondea a centavos para que los renglones del recibo sumen bien.
+    private fun centavos(valor: Double): Double = (valor * 100).roundToLong() / 100.0
 
-    private fun esDomingo(dia: Int, mes: Int, anio: Int): Boolean {
-        return obtenerDiaSemana(dia, mes, anio) == Calendar.SUNDAY
-    }
-
-    private fun esSabado(dia: Int, mes: Int, anio: Int): Boolean {
-        return obtenerDiaSemana(dia, mes, anio) == Calendar.SATURDAY
-    }
-
-    private fun esFeriadoLaboral(dia: Int, mes: Int, anio: Int): Boolean {
-        return FERIADOS.contains(Pair(mes, dia)) && !esDomingo(dia, mes, anio)
-    }
-
+    // Calcula las dos quincenas de un mes. En 'estadoDias' la posición es el día del mes.
     fun calcularMes(
         categoria: String,
         antiguedadAnios: Int,
-        mes: Int, // 1 a 12
+        mes: Int,
         anio: Int,
-        estadoDias: IntArray, // 0 = Blanco (Trabajado), 1 = Rojo (Justificada), 2 = Negro (Injustificada)
+        estadoDias: IntArray,
         horasExtraQ1: Int,
         horasExtraQ2: Int,
         apercibimientoQ1: Boolean,
         apercibimientoQ2: Boolean
     ): Pair<ResultadoQuincena, ResultadoQuincena> {
-
-        val escala = VALORES_DICIEMBRE[categoria] ?: VALORES_DICIEMBRE["CATEGORIA INICIAL"]!!
+        val escala = requireNotNull(ESCALAS[categoria]) { "Categoría desconocida: $categoria" }
         val pctAntiguedad = obtenerPorcentajeAntiguedad(antiguedadAnios)
 
-        val cal = Calendar.getInstance()
-        cal.set(anio, mes - 1, 1)
-        val ultimoDiaMes = cal.getActualMaximum(Calendar.DAY_OF_MONTH)
+        val ultimoDiaMes = Fechas.ultimoDiaDelMes(anio, mes)
+        require(estadoDias.size > ultimoDiaMes) { "estadoDias debe tener un lugar por cada día del mes" }
 
-        // Evaluamos faltas injustificadas (estado == 2) en todo el mes para el Premio Asistencia Perfecta
-        val faltasInjustQ1 = (1..15).count { !esDomingo(it, mes, anio) && estadoDias[it] == 2 }
-        val faltasInjustQ2 = (16..ultimoDiaMes).count { !esDomingo(it, mes, anio) && estadoDias[it] == 2 }
-
-        val ganaPremioPerfectoMes = (faltasInjustQ1 == 0 && faltasInjustQ2 == 0 && !apercibimientoQ1 && !apercibimientoQ2)
+        // La asistencia perfecta se cobra en la 2° quincena si en todo el mes no hubo
+        // faltas injustificadas ni apercibimientos.
+        val faltasInjustQ1 = contarInjustificadas(1..15, mes, anio, estadoDias)
+        val faltasInjustQ2 = contarInjustificadas(16..ultimoDiaMes, mes, anio, estadoDias)
+        val ganaPremioPerfectoMes =
+            faltasInjustQ1 == 0 && faltasInjustQ2 == 0 && !apercibimientoQ1 && !apercibimientoQ2
 
         val resQ1 = calcularQuincena(
             rangoDias = 1..15,
@@ -126,7 +119,7 @@ object MotorLiquidacion {
             estadoDias = estadoDias,
             horasExtraManuales = horasExtraQ1,
             tuvoApercibimiento = apercibimientoQ1,
-            correspondePremioPerfecto = false // En 1° Quincena siempre es 0.00
+            correspondePremioPerfecto = false // en la 1° quincena nunca se cobra
         )
 
         val resQ2 = calcularQuincena(
@@ -144,85 +137,92 @@ object MotorLiquidacion {
         return Pair(resQ1, resQ2)
     }
 
+    private fun contarInjustificadas(rango: IntRange, mes: Int, anio: Int, estadoDias: IntArray): Int =
+        rango.count { !Fechas.esDomingo(anio, mes, it) && estadoDias[it] == ESTADO_INJUSTIFICADA }
+
+    // Calcula una quincena: recorre los días, suma las horas y después arma premios, antigüedad y descuentos.
     private fun calcularQuincena(
         rangoDias: IntRange,
         mes: Int,
         anio: Int,
         escala: EscalaCategoria,
-        pctAntiguedad: Double,
+        pctAntiguedad: Int,
         estadoDias: IntArray,
         horasExtraManuales: Int,
         tuvoApercibimiento: Boolean,
         correspondePremioPerfecto: Boolean
     ): ResultadoQuincena {
-
-        val diasLaborales = rangoDias.filter { !esDomingo(it, mes, anio) }
-
-        // Días efectivamente trabajados (Blanco = estado 0)
-        val diasEfectivos = diasLaborales.filter { estadoDias[it] == 0 }
-
-        // Faltas Injustificadas (Negro = estado 2)
-        val faltasInjustificadas = diasLaborales.count { estadoDias[it] == 2 }
+        // Los domingos no se marcan ni se pagan.
+        val diasLaborales = rangoDias.filter { !Fechas.esDomingo(anio, mes, it) }
 
         var horasNormales = 0
         var horasSabado100 = 0
         var horasFeriado = 0
+        var diasConAsistencia = 0
+        var faltasInjustificadas = 0
 
-        for (dia in diasEfectivos) {
-            when {
-                esFeriadoLaboral(dia, mes, anio) -> {
-                    // Se descuenta de Horas Normales (porque no entra al 'else')
-                    // Va a Horas Feriado y también suma a Horas 100%
-                    horasFeriado += 8
+        for (dia in diasLaborales) {
+            val sabado = Fechas.esSabado(anio, mes, dia)
+            when (estadoDias[dia]) {
+                // Feriado trabajado: 8 horas al valor simple y otras 8 al 100%, por eso se paga doble.
+                ESTADO_FERIADO -> {
+                    horasFeriado += HORAS_JORNADA
+                    diasConAsistencia++
                 }
-                esSabado(dia, mes, anio) -> {
-                    horasNormales += 6
-                    horasSabado100 += 2
+                // Falta justificada: se paga la jornada simple, sin el 100% del sábado ni viáticos.
+                ESTADO_JUSTIFICADA -> {
+                    horasNormales += if (sabado) HORAS_SABADO_NORMALES else HORAS_JORNADA
                 }
+                ESTADO_INJUSTIFICADA -> faltasInjustificadas++
                 else -> {
-                    horasNormales += 8
+                    diasConAsistencia++
+                    if (sabado) {
+                        horasNormales += HORAS_SABADO_NORMALES
+                        horasSabado100 += HORAS_SABADO_AL_100
+                    } else {
+                        horasNormales += HORAS_JORNADA
+                    }
                 }
             }
         }
 
-        // Horas 100% agrupa: 2 hs por sábado trabajado + horas extra de la quincena + las horas del feriado trabajado
+        // En 'horas al 100%' entran: 2 horas por cada sábado, las horas extra y las horas del feriado.
         val totalHoras100 = horasSabado100 + horasExtraManuales + horasFeriado
 
-        // CÁLCULO MONETARIO (Forma A):
-        // - Horas normales: valor simple
-        // - Horas feriado: valor simple (pago base del día feriado)
-        // - Horas 100%: sábado y horas extra al doble (2.0), y las del feriado suman el 100% restante (1.0)
+        // Las horas normales y las de feriado se pagan al valor simple; las del 100% al doble.
         val valorHorasNormales = horasNormales * escala.valorHora
         val valorHorasFeriado = horasFeriado * escala.valorHora
-        val valorHoras100 = ((horasSabado100 + horasExtraManuales) * (escala.valorHora * 2.0)) + (horasFeriado * escala.valorHora)
+        val valorHoras100 =
+            ((horasSabado100 + horasExtraManuales) * (escala.valorHora * 2.0)) + (horasFeriado * escala.valorHora)
 
-        // Premios: Falta justificada (Rojo) NO quita premios. Apercibimiento quita Puntualidad y Perfecto.
+        // La falta justificada no quita premios. El apercibimiento quita puntualidad y asistencia perfecta.
         val premioAsistencia = if (faltasInjustificadas == 0) escala.premioAsistencia else 0.0
-        val premioPuntualidad = if (faltasInjustificadas == 0 && !tuvoApercibimiento) escala.premioPuntualidad else 0.0
+        val premioPuntualidad =
+            if (faltasInjustificadas == 0 && !tuvoApercibimiento) escala.premioPuntualidad else 0.0
         val premioPerfecto = if (correspondePremioPerfecto) escala.premioPerfecto else 0.0
 
-        // Antigüedad sobre retribución básica (Horas normales + Horas 100% + Horas feriado)
+        // La antigüedad se calcula sobre las horas normales, las del 100% y las de feriado.
         val retribucionBasica = valorHorasNormales + valorHoras100 + valorHorasFeriado
-        val antiguedadValor = retribucionBasica * pctAntiguedad
+        val antiguedadValor = centavos(retribucionBasica * (pctAntiguedad / 100.0))
 
-        // Total Remuneraciones Sujetas a retención
-        val remSujetas = retribucionBasica + premioAsistencia + premioPuntualidad + premioPerfecto + antiguedadValor
+        val remSujetas = centavos(
+            retribucionBasica + premioAsistencia + premioPuntualidad + premioPerfecto + antiguedadValor
+        )
 
-        // Conceptos No Remunerativos (Exentos): por días efectivos trabajados
-        val cantDiasEfectivos = diasEfectivos.size
-        val viaticosValor = cantDiasEfectivos * escala.viaticoDia
-        val refrigerioValor = cantDiasEfectivos * escala.refrigerioDia
-        val remExentas = viaticosValor + refrigerioValor
+        // Viáticos y refrigerio: un importe por cada día que se fue a trabajar. No llevan descuentos.
+        val viaticosValor = diasConAsistencia * escala.viaticoDia
+        val refrigerioValor = diasConAsistencia * escala.refrigerioDia
+        val remExentas = centavos(viaticosValor + refrigerioValor)
 
-        // Descuentos de ley y sindicales
-        val descJub = remSujetas * DESC_JUBILACION
-        val desc19032 = remSujetas * DESC_19032
-        val desc23660 = remSujetas * DESC_23660
-        val descTur = remSujetas * DESC_TURISMO
-        val descSol = remSujetas * DESC_SOLIDARIO
-        val totalDescuentos = descJub + desc19032 + desc23660 + descTur + descSol
+        // Los descuentos se calculan solo sobre lo remunerativo y cada uno se redondea.
+        val descJub = centavos(remSujetas * DESC_JUBILACION)
+        val desc19032 = centavos(remSujetas * DESC_19032)
+        val desc23660 = centavos(remSujetas * DESC_23660)
+        val descTur = centavos(remSujetas * DESC_TURISMO)
+        val descSol = centavos(remSujetas * DESC_SOLIDARIO)
+        val totalDescuentos = centavos(descJub + desc19032 + desc23660 + descTur + descSol)
 
-        val totalNeto = remSujetas + remExentas - totalDescuentos
+        val totalNeto = centavos(remSujetas + remExentas - totalDescuentos)
 
         return ResultadoQuincena(
             horasNormales = horasNormales,
@@ -234,11 +234,11 @@ object MotorLiquidacion {
             premioPuntualidad = premioPuntualidad,
             premioAsistencia = premioAsistencia,
             premioPerfecto = premioPerfecto,
-            antiguedadPct = pctAntiguedad * 100,
+            antiguedadPct = pctAntiguedad,
             antiguedadValor = antiguedadValor,
-            viaticosDias = cantDiasEfectivos,
+            viaticosDias = diasConAsistencia,
             viaticosValor = viaticosValor,
-            refrigerioDias = cantDiasEfectivos,
+            refrigerioDias = diasConAsistencia,
             refrigerioValor = refrigerioValor,
             descJubilacion = descJub,
             descLey19032 = desc19032,

@@ -1,6 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">ProyectoMobile</string>
+    <string name="app_name">Calculadora Salarial</string>
 
+    <!-- Los nombres de categoría tienen que coincidir con las claves de MotorLiquidacion -->
     <string-array name="lista_categorias">
         <item>Seleccionar Categoría</item>
         <item>CATEGORIA INICIAL</item>
@@ -23,4 +25,69 @@
         <item>Noviembre</item>
         <item>Diciembre</item>
     </string-array>
+
+    <!-- Login -->
+    <string name="login_titulo">Iniciar Sesión</string>
+    <string name="login_hint_usuario">E-mail o usuario</string>
+    <string name="login_hint_password">Contraseña</string>
+    <string name="login_ingresar">Ingresar</string>
+    <string name="login_mantener_sesion">Mantener sesión iniciada</string>
+    <string name="login_ir_registro">¿No tienes cuenta? Regístrate</string>
+    <string name="login_campos_vacios">Completa tu e-mail o usuario y tu contraseña.</string>
+    <string name="login_credenciales_invalidas">Usuario o contraseña incorrectos.</string>
+    <string name="login_cuenta_creada">Cuenta creada. Inicia sesión para continuar.</string>
+
+    <plurals name="anios">
+        <item quantity="one">%d año</item>
+        <item quantity="other">%d años</item>
+    </plurals>
+
+    <string name="comun_mostrar_password">Mostrar contraseña</string>
+    <string name="comun_ocultar_password">Ocultar contraseña</string>
+
+    <!-- Registro -->
+    <string name="reg_titulo">Registro</string>
+    <string name="reg_hint_nombre">Nombre y apellido</string>
+    <string name="reg_hint_email">E-mail</string>
+    <string name="reg_hint_usuario">Nombre de usuario</string>
+    <string name="reg_hint_password">Contraseña</string>
+    <string name="reg_hint_confirmar">Repetir contraseña</string>
+    <string name="reg_ayuda_antiguedad">Años completos. Si todavía no cumpliste 1 año, ingresá 0.</string>
+    <string name="reg_hint_antiguedad">Años de antigüedad</string>
+    <string name="reg_crear">Crear usuario</string>
+    <string name="reg_volver_login">¿Ya tienes una cuenta? Inicia sesión</string>
+    <string name="reg_error_nombre">Ingresá tu nombre y apellido</string>
+    <string name="reg_error_email">Ingresá un e-mail válido</string>
+    <string name="reg_error_usuario">Ingresá un usuario de 3 a 20 caracteres (letras, números, punto, guion o guion bajo)</string>
+    <string name="reg_error_password">La contraseña debe tener al menos 8 caracteres</string>
+    <string name="reg_error_confirmar">Las contraseñas no coinciden</string>
+    <string name="reg_error_categoria">Seleccioná una categoría</string>
+    <string name="reg_error_antiguedad">Ingresá una cantidad válida de años (0 a 60)</string>
+    <string name="reg_error_email_repetido">Ya existe una cuenta con ese e-mail</string>
+    <string name="reg_error_usuario_repetido">Ese nombre de usuario ya está en uso</string>
+
+    <!-- Calculadora -->
+    <string name="calc_titulo">Calculadora de sueldo</string>
+    <string name="calc_atras">Atrás</string>
+    <string name="calc_datos_empleado">%1$s · %2$s de antigüedad</string>
+    <string name="calc_ayuda_marcas">Tocá el calendario para interactuar</string>
+    <string name="calc_leyenda_trabajado">Día trabajado</string>
+    <string name="calc_leyenda_justificada">Falta justificada</string>
+    <string name="calc_leyenda_injustificada">Falta injustificada</string>
+    <string name="calc_leyenda_feriado">Feriado</string>
+    <string name="calc_habilitar_q1">Habilitar 1° quincena (días 1 al 15)</string>
+    <string name="calc_habilitar_q2">Habilitar 2° quincena (día 16 al fin de mes)</string>
+    <string name="calc_horas_extra_q1" formatted="false">Horas extra al 100% (1° quincena)</string>
+    <string name="calc_horas_extra_q2" formatted="false">Horas extra al 100% (2° quincena)</string>
+    <string name="calc_apercibimiento_q1">Tuvo apercibimientos en la 1° quincena</string>
+    <string name="calc_apercibimiento_q2">Tuvo apercibimientos en la 2° quincena</string>
+    <string name="calc_calcular">Calcular recibo</string>
+    <string name="calc_rango_anios">%1$d - %2$d</string>
+    <string name="calc_dia_con_letra">%1$d\n%2$s</string>
+    <string name="calc_letra_justificada">J</string>
+    <string name="calc_letra_injustificada">I</string>
+    <string name="calc_letra_feriado">F</string>
+    <string name="calc_resumen_quincena">Justificadas: %1$d · Injustificadas: %2$d · Feriados: %3$d</string>
+    <string name="calc_ultimo_neto">Último neto calculado: %1$s</string>
+    <string name="calc_error_sin_quincena">Habilita al menos una quincena para calcular.</string>
 </resources>

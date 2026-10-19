@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F2F8FF"
+    tools:context=".RegistroActivity"
+    tools:ignore="HardcodedText,Autofill">
+
+    <!-- Franja azul superior decorativa -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="#005CE6" />
+
+    <!-- Contenedor del formulario -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="28dp"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="Registro"
+            android:textColor="#005CE6"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:gravity="center"/>
+
+        <!-- 1. Nombre y Apellido -->
+        <EditText
+            android:id="@+id/etNombreRegistro"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/fondo_campo_celeste"
+            android:hint="Nombre y Apellido"
+            android:textColorHint="#E0F0FF"
+            android:textColor="#FFFFFF"
+            android:gravity="center"
+            android:inputType="textPersonName"
+            android:layout_marginBottom="16dp" />
+
+        <!-- 2. Mail -->
+        <EditText
+            android:id="@+id/etEmailRegistro"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/fondo_campo_celeste"
+            android:hint="E-mail"
+            android:textColorHint="#E0F0FF"
+            android:textColor="#FFFFFF"
+            android:gravity="center"
+            android:inputType="textEmailAddress"
+            android:layout_marginBottom="16dp" />
+
+        <!-- 3. Selector de Categoría (Spinner) -->
+        <Spinner
+            android:id="@+id/spCategoriaRegistro"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/fondo_campo_celeste"
+            android:entries="@array/lista_categorias"
+            android:paddingHorizontal="16dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- 4. Contraseña -->
+        <EditText
+            android:id="@+id/etAntiguedadRegistro"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/fondo_campo_celeste"
+            android:gravity="center"
+            android:hint="Años de Antigüedad"
+            android:inputType="number"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#E0F0FF" />
+
+        <EditText
+            android:id="@+id/etPasswordRegistro"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/fondo_campo_celeste"
+            android:hint="Contraseña"
+            android:textColorHint="#E0F0FF"
+            android:textColor="#FFFFFF"
+            android:gravity="center"
+            android:inputType="textPassword"
+            android:layout_marginBottom="16dp" />
+
+        <!-- 5. Repetir Contraseña -->
+        <EditText
+            android:id="@+id/etConfirmPasswordRegistro"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/fondo_campo_celeste"
+            android:hint="Repetir Contraseña"
+            android:textColorHint="#E0F0FF"
+            android:textColor="#FFFFFF"
+            android:gravity="center"
+            android:inputType="textPassword"
+            android:layout_marginBottom="32dp" />
+
+        <!-- Botón Crear Cuenta -->
+        <Button
+            android:id="@+id/btnRegistrar"
+            android:layout_width="220dp"
+            android:layout_height="55dp"
+            android:text="Crear cuenta"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:textColor="#FFFFFF"
+            app:backgroundTint="#005CE6" />
+
+        <!-- Volver al Login -->
+        <Button
+            android:id="@+id/tvVolverALogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="¿Ya tienes cuenta? Inicia sesión"
+            android:textColor="#005CE6"
+            android:padding="0dp"
+            android:layout_marginTop="40dp"
+            android:backgroundTint="#ffffff"/>
+        <!-- 3.5 Años de Antigüedad (NUEVO) -->
+    </LinearLayout>
+
+
+
+</LinearLayout>

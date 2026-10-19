@@ -4,4 +4,7 @@
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
     </style>
+
+    <!-- Agregamos este estilo para que el Manifest lo reconozca -->
+    <style name="Theme.CalculadoraSalarial" parent="Base.Theme.CalculadoraSalarial" />
 </resources>

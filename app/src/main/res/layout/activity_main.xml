@@ -1,19 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:orientation="vertical"
+    android:background="#F2F8FF"
+    tools:context=".MainActivity"
+    tools:ignore="HardcodedText,Autofill">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <!-- Franja azul superior decorativa -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="#005CE6" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- Contenedor del Login centrado -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="36dp"
+        android:gravity="center">
+
+        <!-- 1. Mail o Legajo -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="100dp"
+            android:gravity="center"
+            android:text="Iniciar Sesión"
+            android:textColor="#005CE6"
+            android:textSize="32sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etEmailLogin"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/fondo_campo_celeste"
+            android:hint="E-mail"
+            android:textColorHint="#E0F0FF"
+            android:textColor="#FFFFFF"
+            android:gravity="center"
+            android:inputType="textEmailAddress"
+            android:layout_marginBottom="40dp" />
+
+        <!-- 2. Contraseña -->
+        <EditText
+            android:id="@+id/etPasswordLogin"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/fondo_campo_celeste"
+            android:hint="Contraseña"
+            android:textColorHint="#E0F0FF"
+            android:textColor="#FFFFFF"
+            android:gravity="center"
+            android:inputType="textPassword"
+            android:layout_marginBottom="40dp" />
+
+        <!-- Botón Ingresar -->
+        <Button
+            android:id="@+id/btnIngresar"
+            android:layout_width="220dp"
+            android:layout_height="55dp"
+            android:text="Ingresar"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:textColor="#FFFFFF"
+            app:backgroundTint="#005CE6" />
+
+        <!-- CheckBox chiquito para mantener sesión -->
+        <CheckBox
+            android:id="@+id/cbMantenerSesion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="0dp"
+            android:layout_marginTop="8dp"
+            android:text="Mantener sesión iniciada"
+            android:textColor="#005CE6"
+            android:textSize="13sp"
+            android:scaleX="0.9"
+            android:scaleY="0.9"
+            app:buttonTint="#005CE6" />
+
+        <!-- Botón chico para ir a Registro -->
+        <Button
+            android:id="@+id/btnIrARegistro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="¿No tienes cuenta? Regístrate"
+            android:textAllCaps="false"
+            android:textColor="#005CE6"
+            android:padding="0dp"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="#FFFFFF" />
+
+    </LinearLayout>
+</LinearLayout>

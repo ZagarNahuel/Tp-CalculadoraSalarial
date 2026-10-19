@@ -1,3 +1,26 @@
 <resources>
-    <string name="app_name">CalculadoraSalarial</string>
+    <string name="app_name">ProyectoMobile</string>
+
+    <string-array name="lista_categorias">
+        <item>Seleccionar Categoría</item>
+        <item>CATEGORIA INICIAL</item>
+        <item>CATEGORIA 1</item>
+        <item>CATEGORIA 2</item>
+        <item>CATEGORIA 3</item>
+        <item>CATEGORIA 4</item>
+    </string-array>
+    <string-array name="lista_meses">
+        <item>Enero</item>
+        <item>Febrero</item>
+        <item>Marzo</item>
+        <item>Abril</item>
+        <item>Mayo</item>
+        <item>Junio</item>
+        <item>Julio</item>
+        <item>Agosto</item>
+        <item>Septiembre</item>
+        <item>Octubre</item>
+        <item>Noviembre</item>
+        <item>Diciembre</item>
+    </string-array>
 </resources>

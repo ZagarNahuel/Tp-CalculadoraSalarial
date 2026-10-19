@@ -1,10 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ReciboActivity">
+    android:background="#F5F7FB"
+    tools:context=".ReciboActivity"
+    tools:ignore="HardcodedText">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <!-- Botón superior: <- Cambiar categoría / Volver -->
+        <TextView
+            android:id="@+id/tvCambiarCategoria"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="← Cambiar categoría / Modificar datos"
+            android:textColor="#2B6EF6"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:paddingVertical="8dp"
+            android:layout_marginBottom="8dp" />
+
+        <!-- CARD PRINCIPAL DEL RECIBO -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#FFFFFF"
+            android:elevation="4dp">
+
+            <!-- HEADER AZUL (Igual a .header del HTML) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#2B6EF6"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/tvHeaderRecibo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Recibo — Mes Octubre — CATEGORIA INICIAL"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- CUERPO DEL RECIBO -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <!-- ================== QUINCENA A ================== -->
+                <LinearLayout
+                    android:id="@+id/seccionQuincenaA"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#EEF4FF"
+                        android:padding="8dp"
+                        android:text="Quincena A"
+                        android:textColor="#1A2B4C"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="6dp" />
+
+                    <TableLayout
+                        android:id="@+id/tablaQuincenaA"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <!-- ================== QUINCENA B ================== -->
+                <LinearLayout
+                    android:id="@+id/seccionQuincenaB"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#EEF4FF"
+                        android:padding="8dp"
+                        android:text="Quincena B"
+                        android:textColor="#1A2B4C"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="6dp" />
+
+                    <TableLayout
+                        android:id="@+id/tablaQuincenaB"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <!-- Botón inferior: Nueva consulta -->
+                <Button
+                    android:id="@+id/btnNuevaConsulta"
+                    android:layout_width="wrap_content"
+                    android:layout_height="42dp"
+                    android:text="Nueva consulta"
+                    android:textAllCaps="false"
+                    android:textColor="#2B6EF6"
+                    android:textSize="13sp"
+                    app:backgroundTint="#EEF4FF" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

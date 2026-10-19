@@ -11,4 +11,5 @@
     <color name="calc_feriado">#2E7D32</color>
     <color name="calc_celeste">#2998F2</color>
     <color name="calc_hint_campo">#E0F0FF</color>
+    <color name="calc_borde_tarjeta">#D3E3FA</color>
 </resources>

@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Registro con el mismo formato que el Login: fondo claro, franja azul, título centrado y
-    campos celestes redondeados con el texto de ayuda adentro (hint).
-    Los ids van en camelCase, sin puntos ni "ñ": son los que usa RegistroActivity.kt.
--->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -14,14 +10,12 @@
     android:orientation="vertical"
     tools:context=".RegistroActivity">
 
-    <!-- Franja azul superior decorativa (crece lo que mide la barra de estado) -->
     <View
         android:id="@+id/bandaSuperior"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:background="@color/calc_azul" />
 
-    <!-- El formulario se desplaza: con el teclado abierto no entra en una pantalla chica -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -37,7 +31,6 @@
             android:paddingVertical="24dp">
 
             <TextView
-                android:id="@+id/tvTituloRegistro"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="28dp"
@@ -47,7 +40,6 @@
                 android:textSize="32sp"
                 android:textStyle="bold" />
 
-            <!-- 1. Nombre y apellido -->
             <EditText
                 android:id="@+id/etNombreRegistro"
                 android:layout_width="match_parent"
@@ -61,7 +53,6 @@
                 android:textColor="@color/white"
                 android:textColorHint="@color/calc_hint_campo" />
 
-            <!-- 2. E-mail -->
             <EditText
                 android:id="@+id/etEmailRegistro"
                 android:layout_width="match_parent"
@@ -75,7 +66,6 @@
                 android:textColor="@color/white"
                 android:textColorHint="@color/calc_hint_campo" />
 
-            <!-- 3. Nombre de usuario -->
             <EditText
                 android:id="@+id/etUsuarioRegistro"
                 android:layout_width="match_parent"
@@ -89,7 +79,6 @@
                 android:textColor="@color/white"
                 android:textColorHint="@color/calc_hint_campo" />
 
-            <!-- 4. Contraseña (con ojo dentro de la caja) -->
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -120,7 +109,6 @@
                     android:src="@drawable/ic_ojo_tachado" />
             </FrameLayout>
 
-            <!-- 5. Repetir contraseña (con ojo dentro de la caja) -->
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -151,7 +139,6 @@
                     android:src="@drawable/ic_ojo_tachado" />
             </FrameLayout>
 
-            <!-- 6. Categoría: mismo formato que el selector de mes de la Calculadora -->
             <Spinner
                 android:id="@+id/spCategoriaRegistro"
                 android:layout_width="match_parent"
@@ -162,7 +149,6 @@
                 android:paddingEnd="40dp"
                 android:popupBackground="@color/white" />
 
-            <!-- 7. Años de antigüedad (arranca vacío) -->
             <EditText
                 android:id="@+id/etAntiguedadRegistro"
                 android:layout_width="match_parent"
@@ -196,7 +182,6 @@
                 android:textSize="16sp"
                 app:backgroundTint="@color/calc_azul" />
 
-            <!-- Mismo estilo que "Regístrate" en el Login -->
             <Button
                 android:id="@+id/tvVolverALogin"
                 android:layout_width="wrap_content"

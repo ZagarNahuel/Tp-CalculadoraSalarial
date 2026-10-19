@@ -8,8 +8,9 @@ import android.widget.Button
 import android.widget.TextView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
+// Panel que sube desde abajo y explica un concepto del recibo.
+// Recibe el título y el texto ya armados.
 class ExplicacionConceptoFragment : BottomSheetDialogFragment() {
-
     companion object {
         const val TAG = "explicacion_concepto"
         private const val ARG_TITULO = "titulo"

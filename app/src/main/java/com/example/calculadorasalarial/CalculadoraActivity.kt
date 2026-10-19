@@ -30,22 +30,17 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.Calendar
 
-/**
- * Pantalla principal (Home). Los datos del empleado (categoría y antigüedad) salen del
- * registro guardado en SharedPreferences; acá solo se marcan los días del mes.
- *
- *  - Tocar un día:            blanco -> justificada (J) -> injustificada (I) -> blanco
- *  - Mantener presionado:     feriado trabajado (F, se paga x2). Mantener de nuevo lo saca.
- */
+// Pantalla principal. La categoría y la antigüedad vienen de la cuenta guardada: acá solo se marcan los días.
+// Tocar un día: blanco, falta justificada, falta injustificada. Mantener presionado: feriado trabajado (se paga doble).
 class CalculadoraActivity : AppCompatActivity() {
-
     companion object {
         private const val TAG_DOMINGO = "domingo"
-        private const val ANIO_BASE = 2020   // las páginas de años empiezan en 2020, 2032, 2008...
+        // El selector de años muestra de a 12, entre 2008 y 2103.
+        private const val ANIO_BASE = 2020
         private const val INICIO_MIN = 2008
         private const val INICIO_MAX = 2092
 
-        // Claves para conservar el calendario si Android recrea la pantalla
+        // Claves para no perder los días marcados si Android recrea la pantalla.
         private const val GUARDADO_ESTADO = "estado_dias"
         private const val GUARDADO_MES = "mes"
         private const val GUARDADO_ANIO = "anio"
@@ -53,14 +48,15 @@ class CalculadoraActivity : AppCompatActivity() {
 
     private val repositorio by lazy { RepositorioUsuarios(this) }
 
-    // 0 = Trabajado, 1 = Justificada, 2 = Injustificada, 3 = Feriado (ver MotorLiquidacion.ESTADO_*)
+    // Estado de cada día (la posición es el día del mes): 0 trabajado, 1 justificada, 2 injustificada, 3 feriado.
     private val estadoDias = IntArray(32)
     private var ultimoDiaMes = 31
 
-    // Mes (1..12) y año del calendario que se está mostrando: si cambian, se reinician las marcas
+    // Mes y año que se están mostrando. Si cambian, se borran las marcas.
     private var mesMostrado = -1
     private var anioMostrado = -1
 
+    private lateinit var tvNombreEmpleado: TextView
     private lateinit var tvDatosEmpleado: TextView
     private lateinit var spMes: Spinner
     private lateinit var tvAnio: TextView
@@ -79,7 +75,7 @@ class CalculadoraActivity : AppCompatActivity() {
     private lateinit var cbApercibimientoQ2: CheckBox
     private lateinit var tvUltimoNeto: TextView
 
-    // El Recibo nos devuelve el neto calculado o pide empezar una consulta nueva.
+    // Lo que devuelve el Recibo: el neto calculado o el pedido de empezar una consulta nueva.
     private val lanzadorRecibo =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { resultado ->
             val datos = resultado.data
@@ -95,17 +91,16 @@ class CalculadoraActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Sin una cuenta iniciada no hay categoría con la que calcular: se vuelve al login.
+        // Sin una cuenta iniciada no hay categoría para calcular, así que se vuelve al login.
         if (repositorio.usuarioActual() == null) {
             irAlLogin()
             return
         }
 
-        // La orientación vertical se fija en el AndroidManifest (screenOrientation="portrait").
         setContentView(R.layout.activity_calculadora)
         ajustarBordesDelSistema()
 
-        // 1. Vincular elementos del XML
+        tvNombreEmpleado = findViewById(R.id.tvNombreEmpleado)
         tvDatosEmpleado = findViewById(R.id.tvDatosEmpleado)
         spMes = findViewById(R.id.spMes)
         tvAnio = findViewById(R.id.tvAnio)
@@ -126,14 +121,13 @@ class CalculadoraActivity : AppCompatActivity() {
 
         mostrarDatosEmpleado()
 
-        // "Atrás" (el botón del encabezado y el del sistema) vuelve al login y cierra la sesión
+        // 'Atrás' (el botón y el del celular) vuelve al login y cierra la sesión.
         findViewById<Button>(R.id.btnAtras).setOnClickListener { volverAlLogin() }
         onBackPressedDispatcher.addCallback(this) { volverAlLogin() }
 
-        // 2. Spinner de meses con texto blanco (igual que el año)
         spMes.adapter = adaptadorSpinnerBlanco(resources.getStringArray(R.array.lista_meses))
 
-        // 3. Mes y año: los de hoy, o los que había antes de que Android recreara la pantalla
+        // Mes y año de hoy, o los que había antes de que Android recreara la pantalla.
         if (savedInstanceState == null) {
             val hoy = Calendar.getInstance()
             spMes.setSelection(hoy.get(Calendar.MONTH))
@@ -151,7 +145,6 @@ class CalculadoraActivity : AppCompatActivity() {
         }
         tvAnio.text = anioSeleccionado.toString()
 
-        // 4. Al cambiar el mes o el año, el calendario se vuelve a armar
         spMes.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 reconstruirCalendarios()
@@ -161,7 +154,6 @@ class CalculadoraActivity : AppCompatActivity() {
         }
         tvAnio.setOnClickListener { mostrarSelectorAnio() }
 
-        // 5. Habilitar / deshabilitar quincenas
         cbHabilitarQ1.setOnCheckedChangeListener { _, marcado ->
             cambiarEstadoSeccion(layoutContenedorQ1, marcado)
         }
@@ -171,13 +163,12 @@ class CalculadoraActivity : AppCompatActivity() {
 
         reconstruirCalendarios()
 
-        // 6. Calcular recibo
         btnCalcularRecibo.setOnClickListener { calcularRecibo() }
     }
 
     override fun onResume() {
         super.onResume()
-        // Si en el Recibo se cambió la categoría, el encabezado tiene que reflejarlo.
+        // Si en el Recibo se cambió la categoría, el encabezado tiene que mostrarla.
         if (::tvDatosEmpleado.isInitialized) mostrarDatosEmpleado()
     }
 
@@ -190,14 +181,13 @@ class CalculadoraActivity : AppCompatActivity() {
         }
     }
 
-    // ------------------------------------------------------------------
-    // Datos y recibo
-    // ------------------------------------------------------------------
-
     private fun mostrarDatosEmpleado() {
         val usuario = repositorio.usuarioActual() ?: return
+        tvNombreEmpleado.text = usuario.nombre
         tvDatosEmpleado.text = getString(
-            R.string.calc_datos_empleado, usuario.nombre, usuario.categoria, usuario.antiguedad
+            R.string.calc_datos_empleado,
+            MotorLiquidacion.nombreVisible(usuario.categoria),
+            textoAnios(usuario.antiguedad)
         )
     }
 
@@ -212,9 +202,8 @@ class CalculadoraActivity : AppCompatActivity() {
             return
         }
 
-        // Una quincena deshabilitada se envía sin faltas, apercibimientos ni horas extra.
-        // Así, si solo se calcula la 2°, se asume que en la 1° cobró todos los premios
-        // y el premio perfecto depende únicamente de la 2° quincena.
+        // Una quincena sin habilitar se manda sin faltas ni horas extra. Si solo se calcula la 2°,
+        // se supone que en la 1° se cobraron todos los premios.
         val dias = estadoDias.copyOf()
         if (!cbHabilitarQ1.isChecked) for (d in 1..15) dias[d] = MotorLiquidacion.ESTADO_TRABAJADO
         if (!cbHabilitarQ2.isChecked) for (d in 16..31) dias[d] = MotorLiquidacion.ESTADO_TRABAJADO
@@ -228,7 +217,7 @@ class CalculadoraActivity : AppCompatActivity() {
         intentRecibo.putExtra("CATEGORIA", usuario.categoria)
         intentRecibo.putExtra("ANTIGUEDAD", usuario.antiguedad)
         intentRecibo.putExtra("MES_NOMBRE", spMes.selectedItem.toString())
-        intentRecibo.putExtra("MES_NUMERO", spMes.selectedItemPosition + 1) // 1 = Enero ... 12 = Diciembre
+        intentRecibo.putExtra("MES_NUMERO", spMes.selectedItemPosition + 1)
         intentRecibo.putExtra("ANIO", anioSeleccionado)
         intentRecibo.putExtra("ESTADO_DIAS", dias)
         intentRecibo.putExtra("HORAS_EXTRA_Q1", horasQ1)
@@ -240,7 +229,7 @@ class CalculadoraActivity : AppCompatActivity() {
         lanzadorRecibo.launch(intentRecibo)
     }
 
-    /** "Nueva consulta" desde el Recibo: deja el formulario como recién abierto. */
+    // 'Nueva consulta': deja todo como al abrir la pantalla.
     private fun reiniciarFormulario() {
         estadoDias.fill(0)
         etHorasExtraQ1.text.clear()
@@ -258,20 +247,13 @@ class CalculadoraActivity : AppCompatActivity() {
         tvUltimoNeto.visibility = View.VISIBLE
     }
 
-    // ------------------------------------------------------------------
-    // Navegación
-    // ------------------------------------------------------------------
-
-    /** Vuelve al login cerrando la sesión: así "Mantener sesión" no salta el login al volver a entrar. */
+    // Vuelve al login y cierra la sesión (así 'Mantener sesión' no se salta el login al volver).
     private fun volverAlLogin() {
         repositorio.cerrarSesion()
         irAlLogin()
     }
 
-    /**
-     * Abre el login borrando todas las pantallas anteriores de la pila,
-     * así el botón "Atrás" no vuelve a Registro ni a la Calculadora.
-     */
+    // Abre el login y borra las pantallas anteriores, para que 'Atrás' no vuelva a la calculadora.
     private fun irAlLogin() {
         val intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
@@ -279,11 +261,7 @@ class CalculadoraActivity : AppCompatActivity() {
         finish()
     }
 
-    // ------------------------------------------------------------------
-    // Calendario
-    // ------------------------------------------------------------------
-
-    /** Muestra una grilla de 12 años con flechas para cambiar de página. */
+    // Ventana para elegir el año: una grilla de 12 años con flechas para pasar de página.
     private fun mostrarSelectorAnio() {
         val vista = layoutInflater.inflate(R.layout.dialogo_selector_anio, null)
         val tvRango = vista.findViewById<TextView>(R.id.tvRangoAnios)
@@ -292,12 +270,11 @@ class CalculadoraActivity : AppCompatActivity() {
         val gridAnios = vista.findViewById<GridLayout>(R.id.gridAnios)
         val dialogo = MaterialAlertDialogBuilder(this).setView(vista).create()
 
-        // Primer año de la página que contiene al año elegido
         var inicio = anioSeleccionado - (anioSeleccionado - ANIO_BASE).mod(12)
         inicio = inicio.coerceIn(INICIO_MIN, INICIO_MAX)
 
         fun dibujarPagina() {
-            tvRango.text = "$inicio - ${inicio + 11}"
+            tvRango.text = getString(R.string.calc_rango_anios, inicio, inicio + 11)
             btnAnterior.isEnabled = inicio > INICIO_MIN
             btnSiguiente.isEnabled = inicio < INICIO_MAX
             gridAnios.removeAllViews()
@@ -340,13 +317,13 @@ class CalculadoraActivity : AppCompatActivity() {
         dialogo.show()
     }
 
-    /** Vuelve a armar las dos quincenas según el mes y el año elegidos. */
+    // Arma de nuevo las dos quincenas con el mes y el año elegidos.
     private fun reconstruirCalendarios() {
         val anio = anioSeleccionado
-        val mes = spMes.selectedItemPosition + 1 // 1 = Enero ... 12 = Diciembre
+        val mes = spMes.selectedItemPosition + 1
         if (mes < 1) return
 
-        // Las marcas solo se reinician si realmente cambió el mes o el año
+        // Las marcas solo se borran si cambió el mes o el año.
         if (mes != mesMostrado || anio != anioMostrado) {
             estadoDias.fill(0)
             mesMostrado = mes
@@ -363,7 +340,7 @@ class CalculadoraActivity : AppCompatActivity() {
         actualizarResumenes()
     }
 
-    /** Dibuja L M M J V S D y los días del rango, alineados con el día real de la semana. */
+    // Dibuja las letras L M M J V S D y los días, alineados con el día real de la semana.
     private fun construirCalendario(grid: GridLayout, desde: Int, hasta: Int, mes: Int, anio: Int) {
         grid.removeAllViews()
 
@@ -378,7 +355,7 @@ class CalculadoraActivity : AppCompatActivity() {
             grid.addView(encabezado)
         }
 
-        // Casilleros vacíos hasta llegar al día de la semana en que empieza el rango
+        // Casilleros vacíos hasta llegar al día de la semana en que empieza la quincena.
         repeat(Fechas.columnaDeLaSemana(anio, mes, desde)) {
             val vacio = View(this)
             vacio.layoutParams = paramsCelda(dp(48))
@@ -405,8 +382,8 @@ class CalculadoraActivity : AppCompatActivity() {
         boton.cornerRadius = dp(8)
         boton.layoutParams = paramsCelda(dp(48))
 
+        // Los domingos no se pueden marcar: no cuentan como día de trabajo.
         if (esDomingo) {
-            // Los domingos no se pueden marcar: no cuentan como día laboral
             boton.text = dia.toString()
             boton.tag = TAG_DOMINGO
             boton.isEnabled = false
@@ -415,9 +392,9 @@ class CalculadoraActivity : AppCompatActivity() {
         } else {
             pintarDia(boton, dia, estadoDias[dia])
 
+            // Cada toque pasa al estado siguiente: blanco, justificada, injustificada.
+            // Si estaba como feriado, vuelve a blanco.
             boton.setOnClickListener {
-                // Rotar estado: blanco -> justificada (rojo) -> injustificada (negro) -> blanco.
-                // Si el día estaba como feriado, un toque lo vuelve a blanco.
                 estadoDias[dia] = if (estadoDias[dia] == MotorLiquidacion.ESTADO_FERIADO) {
                     MotorLiquidacion.ESTADO_TRABAJADO
                 } else {
@@ -427,8 +404,8 @@ class CalculadoraActivity : AppCompatActivity() {
                 actualizarResumenes()
             }
 
+            // Mantener presionado marca o saca el feriado trabajado (se paga doble).
             boton.setOnLongClickListener {
-                // Mantener presionado: marca / desmarca el día como feriado trabajado (pago x2)
                 estadoDias[dia] = if (estadoDias[dia] == MotorLiquidacion.ESTADO_FERIADO) {
                     MotorLiquidacion.ESTADO_TRABAJADO
                 } else {
@@ -442,21 +419,21 @@ class CalculadoraActivity : AppCompatActivity() {
         return boton
     }
 
-    /** Además del color, agrega una letra (J / I / F) para no depender solo del color. */
+    // Además del color lleva una letra (J, I o F), así no depende solo del color.
     private fun pintarDia(boton: MaterialButton, dia: Int, estado: Int) {
         when (estado) {
             MotorLiquidacion.ESTADO_JUSTIFICADA -> {
-                boton.text = "$dia\nJ"
+                boton.text = getString(R.string.calc_dia_con_letra, dia, getString(R.string.calc_letra_justificada))
                 boton.backgroundTintList = ColorStateList.valueOf(color(R.color.calc_rojo))
                 boton.setTextColor(Color.WHITE)
             }
             MotorLiquidacion.ESTADO_INJUSTIFICADA -> {
-                boton.text = "$dia\nI"
+                boton.text = getString(R.string.calc_dia_con_letra, dia, getString(R.string.calc_letra_injustificada))
                 boton.backgroundTintList = ColorStateList.valueOf(color(R.color.calc_negro))
                 boton.setTextColor(Color.WHITE)
             }
             MotorLiquidacion.ESTADO_FERIADO -> {
-                boton.text = "$dia\nF"
+                boton.text = getString(R.string.calc_dia_con_letra, dia, getString(R.string.calc_letra_feriado))
                 boton.backgroundTintList = ColorStateList.valueOf(color(R.color.calc_feriado))
                 boton.setTextColor(Color.WHITE)
             }
@@ -486,16 +463,11 @@ class CalculadoraActivity : AppCompatActivity() {
             vista.isEnabled = habilitado
             if (vista is GridLayout) {
                 for (celda in vista.children) {
-                    // Los domingos siempre quedan deshabilitados
                     celda.isEnabled = habilitado && celda.tag != TAG_DOMINGO
                 }
             }
         }
     }
-
-    // ------------------------------------------------------------------
-    // Utilidades
-    // ------------------------------------------------------------------
 
     private fun paramsCelda(alto: Int): GridLayout.LayoutParams {
         val params = GridLayout.LayoutParams(
@@ -512,10 +484,7 @@ class CalculadoraActivity : AppCompatActivity() {
 
     private fun color(@ColorRes id: Int): Int = ContextCompat.getColor(this, id)
 
-    /**
-     * Evita que el encabezado y la barra inferior queden bajo la barra de estado, la de
-     * navegación o el teclado (la pantalla se dibuja de borde a borde).
-     */
+    // Evita que el encabezado y la barra de abajo queden tapados por las barras del celular o el teclado.
     private fun ajustarBordesDelSistema() {
         val raiz = findViewById<View>(R.id.raizCalculadora)
         val encabezado = findViewById<View>(R.id.encabezadoCalc)
@@ -527,7 +496,7 @@ class CalculadoraActivity : AppCompatActivity() {
                 WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
             )
             val teclado = insets.getInsets(WindowInsetsCompat.Type.ime())
-            encabezado.setPadding(dp(20) + barras.left, barras.top + dp(12), dp(8) + barras.right, dp(12))
+            encabezado.setPadding(dp(12) + barras.left, barras.top + dp(8), dp(20) + barras.right, dp(16))
             barraInferior.setPadding(
                 dp(20) + barras.left, dp(12), dp(20) + barras.right,
                 dp(12) + maxOf(barras.bottom, teclado.bottom)

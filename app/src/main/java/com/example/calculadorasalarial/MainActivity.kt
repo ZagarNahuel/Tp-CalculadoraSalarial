@@ -9,14 +9,13 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 
-/** Pantalla de Login: valida lo que se guardó en el Registro (SharedPreferences). */
+// Pantalla de inicio de sesión: comprueba lo que se guardó al registrarse.
 class MainActivity : AppCompatActivity() {
-
     private lateinit var repositorio: RepositorioUsuarios
     private lateinit var etUsuario: EditText
     private lateinit var etPassword: EditText
 
-    // El Registro devuelve el e-mail con el que se creó la cuenta para dejarlo escrito acá.
+    // Al volver del Registro, se deja escrito el e-mail de la cuenta nueva.
     private val lanzadorRegistro =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { resultado ->
             if (resultado.resultCode == RESULT_OK) {
@@ -32,13 +31,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         repositorio = RepositorioUsuarios(this)
 
-        // Si el usuario eligió "Mantener sesión", se salta el login.
+        // Si el usuario pidió mantener la sesión, pasamos directo a la calculadora.
         if (repositorio.haySesionGuardada()) {
             irCalculadora()
             return
         }
-        // Sin "Mantener sesión" cada vez que se abre la app se empieza desde el login:
-        // se borra cualquier sesión que haya quedado de la vez anterior.
+        // Si no la pidió, siempre se empieza desde el login.
         repositorio.cerrarSesion()
 
         setContentView(R.layout.activity_main)

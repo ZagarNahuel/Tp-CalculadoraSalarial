@@ -12,7 +12,6 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Abre el selector de categoría (ReciboActivity.mostrarSelectorCategoria). -->
         <TextView
             android:id="@+id/tvCambiarCategoria"
             android:layout_width="wrap_content"
@@ -37,7 +36,6 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <!-- Resumen superior: las cifras salen del MotorLiquidacion; este XML no calcula. -->
         <LinearLayout
             android:id="@+id/cardResumenRecibo"
             android:layout_width="match_parent"
@@ -235,7 +233,6 @@
                 android:textSize="12sp" />
         </LinearLayout>
 
-        <!-- Opciones de valor agregado del TP, sin bibliotecas externas. -->
         <LinearLayout
             android:id="@+id/cardHerramientasRecibo"
             android:layout_width="match_parent"

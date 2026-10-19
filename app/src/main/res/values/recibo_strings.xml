@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Textos del recibo separados para seguir la consigna de buenas prácticas. -->
+    <!-- Textos de la pantalla del Recibo. -->
     <string name="recibo_titulo">Recibo de sueldo</string>
     <string name="recibo_cambiar_categoria">← Cambiar categoría</string>
     <string name="recibo_cambiar_categoria_titulo">Elegí tu categoría</string>
     <string name="recibo_categoria_actualizada">Categoría actualizada: %1$s</string>
     <string name="recibo_cancelar">Cancelar</string>
-    <string name="recibo_cabecera_datos">Recibo de sueldo · %1$s\n%2$s · Antigüedad: %3$d años</string>
+    <string name="recibo_cabecera_datos">Recibo de sueldo · %1$s\n%2$s · Antigüedad: %3$s</string>
     <string name="recibo_resumen_titulo">RESUMEN DE LA CONSULTA</string>
     <string name="recibo_resumen_remunerativo_base">Remunerativo: —</string>
     <string name="recibo_resumen_no_remunerativo_base">No remunerativo: —</string>

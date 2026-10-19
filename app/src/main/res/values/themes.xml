@@ -1,8 +1,6 @@
 <resources>
-    <!--
-        Tema único de la app. Es claro a propósito: todas las pantallas usan la paleta azul/celeste
-        de colores_calculadora.xml y recibo_colors.xml, así que no hay versión oscura (values-night).
-    -->
+    <!-- Un solo tema para toda la app (claro). -->
+
     <style name="Base.Theme.CalculadoraSalarial" parent="Theme.Material3.Light.NoActionBar">
         <item name="colorPrimary">@color/calc_azul</item>
         <item name="colorOnPrimary">@color/white</item>

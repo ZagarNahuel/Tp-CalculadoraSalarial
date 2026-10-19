@@ -8,7 +8,6 @@
     android:padding="16dp"
     tools:ignore="HardcodedText">
 
-    <!-- Rango de años de la página (ej: 2020 - 2031) y flechas -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -55,7 +54,6 @@
         android:layout_marginBottom="8dp"
         android:background="@color/calc_contenedor" />
 
-    <!-- Los 12 años se generan por código (CalculadoraActivity) -->
     <GridLayout
         android:id="@+id/gridAnios"
         android:layout_width="match_parent"

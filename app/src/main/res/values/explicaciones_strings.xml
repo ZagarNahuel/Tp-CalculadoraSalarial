@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Explicaciones del recibo (ExplicacionRecibo.kt). Se usan con getString(id, args):
-         un "%%" se muestra como "%" y los argumentos son siempre texto (%n$s). -->
+    <!-- Textos del panel que explica cada fila del recibo. Un %% se muestra como %. -->
 
     <string name="exp_horas_normales">Se pagan al valor hora de tu categoría.\n\n%2$s h × %1$s = %3$s\n\nCada día trabajado suma 8 h (los sábados, 6 h). Las faltas justificadas también se pagan como horas normales; las injustificadas no suman horas.\n\nEn esta quincena: %4$s días de falta justificada y %5$s de falta injustificada.</string>
 
@@ -22,7 +21,7 @@
     <string name="exp_motivo_perfecto_primera">Esta es la 1° quincena: el premio se paga con la 2°.</string>
     <string name="exp_motivo_perfecto_perdido">En esta quincena: no se pagó porque en el mes hubo faltas injustificadas o apercibimientos.</string>
 
-    <string name="exp_antiguedad">Es un porcentaje de la retribución básica (horas normales + horas al 100%% + horas feriado = %1$s).\n\nTenés %2$s año(s) de antigüedad, que corresponden a %3$s%%:\n%1$s × %3$s%% = %4$s\n\nRegla: menos de 1 año no paga antigüedad; de 1 a 4 años es 4%%; desde 5 años, 1%% por cada año.</string>
+    <string name="exp_antiguedad">Es un porcentaje de la retribución básica (horas normales + horas al 100%% + horas feriado = %1$s).\n\nTenés %2$s de antigüedad, que corresponden a %3$s%%:\n%1$s × %3$s%% = %4$s\n\nRegla: menos de 1 año no paga antigüedad; de 1 a 4 años es 4%%; desde 5 años, 1%% por cada año.</string>
 
     <string name="exp_viaticos">Importe fijo por cada día en que fuiste a trabajar.\n\n%1$s × %2$s día(s) = %3$s\n\nCuentan los días trabajados y los feriados trabajados (una sola vez por día, aunque el feriado se pague doble). No cuentan las faltas, justificadas o no.\n\nEs un concepto no remunerativo: no tiene descuentos.</string>
 

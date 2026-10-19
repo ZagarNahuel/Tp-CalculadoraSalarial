@@ -9,13 +9,9 @@ import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
-/**
- * Pantalla de Registro: valida los datos y los guarda con [RepositorioUsuarios]
- * (SharedPreferences). La categoría y la antigüedad que se eligen acá son las que
- * después usan la Calculadora y el Recibo.
- */
+// Pantalla de registro: revisa los datos y guarda la cuenta en el celular.
+// La categoría y la antigüedad que se eligen acá son las que usan después la calculadora y el recibo.
 class RegistroActivity : AppCompatActivity() {
-
     companion object {
         const val EXTRA_EMAIL_REGISTRADO = "EMAIL_REGISTRADO"
         private const val LARGO_MINIMO_PASSWORD = 8
@@ -48,10 +44,10 @@ class RegistroActivity : AppCompatActivity() {
         val btnRegistrar = findViewById<Button>(R.id.btnRegistrar)
         val btnVolverALogin = findViewById<Button>(R.id.tvVolverALogin)
 
-        // Selector de categoría con el mismo formato celeste que el de meses de la Calculadora
+        // La lista de categorías tiene el mismo estilo que el selector de mes.
         spCategoria.adapter = adaptadorSpinnerBlanco(resources.getStringArray(R.array.lista_categorias))
 
-        // Cada contraseña tiene su ojo (dentro del campo) para mostrarla u ocultarla
+        // Cada contraseña tiene su ojo para verla u ocultarla.
         configurarOjoContrasena(etPassword, findViewById(R.id.ivOjoPassword))
         configurarOjoContrasena(etConfirmar, findViewById(R.id.ivOjoConfirmar))
 
@@ -72,7 +68,7 @@ class RegistroActivity : AppCompatActivity() {
                 ErrorRegistro.EMAIL_REPETIDO -> marcarError(etEmail, R.string.reg_error_email_repetido)
                 ErrorRegistro.USUARIO_REPETIDO -> marcarError(etUsuario, R.string.reg_error_usuario_repetido)
                 null -> {
-                    // Volvemos al Login con el e-mail ya escrito: ahí se valida lo que se guardó.
+                    // Volvemos al login con el e-mail ya escrito.
                     setResult(RESULT_OK, Intent().putExtra(EXTRA_EMAIL_REGISTRADO, email))
                     finish()
                 }
@@ -82,7 +78,7 @@ class RegistroActivity : AppCompatActivity() {
         btnVolverALogin.setOnClickListener { finish() }
     }
 
-    /** Valida todos los campos; marca el primero con error y le da el foco. */
+    // Revisa todos los campos y deja el cursor en el primero que está mal.
     private fun datosValidos(): Boolean {
         var primerError: EditText? = null
         fun fallo(campo: EditText, mensaje: Int) {

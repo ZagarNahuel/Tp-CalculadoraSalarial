@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Ojo tachado: la contraseña está oculta. -->
+
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
     android:viewportWidth="24"
     android:viewportHeight="24">
 
-    <!-- Contorno del ojo -->
     <path
         android:fillColor="#00000000"
         android:pathData="M2,12C4.6,7.2 8.1,5.2 12,5.2C15.9,5.2 19.4,7.2 22,12C19.4,16.8 15.9,18.8 12,18.8C8.1,18.8 4.6,16.8 2,12Z"
@@ -14,12 +13,10 @@
         android:strokeLineJoin="round"
         android:strokeWidth="1.8" />
 
-    <!-- Pupila -->
     <path
         android:fillColor="#FFFFFF"
         android:pathData="M8.8,12a3.2,3.2 0,1 0,6.4 0a3.2,3.2 0,1 0,-6.4 0Z" />
 
-    <!-- Tachado: primero una línea del color del campo (deja el "corte" en el ojo) y encima la blanca -->
     <path
         android:pathData="M3.4,3.4L20.6,20.6"
         android:strokeColor="@color/calc_celeste"

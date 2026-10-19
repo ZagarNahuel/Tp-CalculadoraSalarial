@@ -4,7 +4,7 @@ import android.content.Context
 import java.text.NumberFormat
 import java.util.Locale
 
-/** Filas del recibo que se pueden tocar para ver cómo se calcularon. */
+// Filas del recibo que se pueden tocar.
 enum class ConceptoRecibo {
     HORAS_NORMALES, HORAS_100, HORAS_FERIADO,
     PREMIO_PUNTUALIDAD, PREMIO_ASISTENCIA, PREMIO_PERFECTO,
@@ -13,23 +13,19 @@ enum class ConceptoRecibo {
     TOTALES
 }
 
-/** Datos de la consulta que hacen falta para explicar una quincena. */
+// Datos de la consulta que hacen falta para explicar una quincena.
 data class DatosExplicacion(
     val escala: EscalaCategoria,
     val antiguedad: Int,
-    val quincena: Int,          // 1 o 2
+    val quincena: Int,
     val horasExtra: Int,
     val apercibimiento: Boolean,
     val justificadas: Int,
     val injustificadas: Int
 )
 
-/**
- * Arma los textos que muestra [ExplicacionConceptoFragment]. Los números salen del mismo
- * [ResultadoQuincena] que usa el recibo, así que la explicación nunca se contradice con la tabla.
- */
+// Arma los textos que explican cada fila del recibo, con los mismos números de la tabla.
 object ExplicacionRecibo {
-
     fun titulo(contexto: Context, concepto: ConceptoRecibo): String = contexto.getString(
         when (concepto) {
             ConceptoRecibo.HORAS_NORMALES -> R.string.recibo_horas_normales
@@ -114,7 +110,7 @@ object ExplicacionRecibo {
                 val basica = d.valorHorasNormales + d.valorHoras100 + d.valorHorasFeriado
                 contexto.getString(
                     R.string.exp_antiguedad,
-                    dinero(basica), datos.antiguedad.toString(), d.antiguedadPct.toString(), dinero(d.antiguedadValor)
+                    dinero(basica), contexto.textoAnios(datos.antiguedad), d.antiguedadPct.toString(), dinero(d.antiguedadValor)
                 )
             }
 
@@ -156,7 +152,7 @@ object ExplicacionRecibo {
 
     private fun dinero(valor: Double): String = Formato.dinero(valor)
 
-    /** 0.109961 -> "10,9961" */
+    // Muestra 0.109961 como 10,9961.
     private fun porcentaje(tasa: Double): String =
         NumberFormat.getNumberInstance(Locale.forLanguageTag("es-AR")).apply {
             minimumFractionDigits = 0

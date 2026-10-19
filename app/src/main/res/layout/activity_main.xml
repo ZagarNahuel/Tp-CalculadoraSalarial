@@ -9,14 +9,12 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <!-- Franja azul superior decorativa (crece lo que mide la barra de estado) -->
     <View
         android:id="@+id/bandaSuperior"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:background="@color/calc_azul" />
 
-    <!-- Contenedor del Login centrado (con scroll para pantallas chicas o teclado abierto) -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -40,7 +38,6 @@
                 android:textSize="32sp"
                 android:textStyle="bold" />
 
-            <!-- 1. E-mail o nombre de usuario -->
             <EditText
                 android:id="@+id/etEmailLogin"
                 android:layout_width="match_parent"
@@ -54,7 +51,6 @@
                 android:textColor="@color/white"
                 android:textColorHint="@color/calc_hint_campo" />
 
-            <!-- 2. Contraseña: el ojo va dentro de la caja, fijo al final -->
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -95,7 +91,6 @@
                 android:textSize="16sp"
                 app:backgroundTint="@color/calc_azul" />
 
-            <!-- CheckBox chiquito para mantener sesión -->
             <CheckBox
                 android:id="@+id/cbMantenerSesion"
                 android:layout_width="wrap_content"
@@ -107,7 +102,6 @@
                 android:textSize="13sp"
                 app:buttonTint="@color/calc_azul" />
 
-            <!-- Botón chico para ir a Registro -->
             <Button
                 android:id="@+id/btnIrARegistro"
                 android:layout_width="wrap_content"

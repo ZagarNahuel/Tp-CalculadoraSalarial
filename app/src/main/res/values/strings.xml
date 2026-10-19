@@ -37,6 +37,11 @@
     <string name="login_credenciales_invalidas">Usuario o contraseña incorrectos.</string>
     <string name="login_cuenta_creada">Cuenta creada. Inicia sesión para continuar.</string>
 
+    <plurals name="anios">
+        <item quantity="one">%d año</item>
+        <item quantity="other">%d años</item>
+    </plurals>
+
     <string name="comun_mostrar_password">Mostrar contraseña</string>
     <string name="comun_ocultar_password">Ocultar contraseña</string>
 
@@ -63,8 +68,8 @@
 
     <!-- Calculadora -->
     <string name="calc_titulo">Calculadora de sueldo</string>
-    <string name="calc_atras">← Atrás</string>
-    <string name="calc_datos_empleado">%1$s · %2$s · Antigüedad: %3$d años</string>
+    <string name="calc_atras">Atrás</string>
+    <string name="calc_datos_empleado">%1$s · %2$s de antigüedad</string>
     <string name="calc_ayuda_marcas">Tocá el calendario para interactuar</string>
     <string name="calc_leyenda_trabajado">Día trabajado</string>
     <string name="calc_leyenda_justificada">Falta justificada</string>
@@ -77,6 +82,11 @@
     <string name="calc_apercibimiento_q1">Tuvo apercibimientos en la 1° quincena</string>
     <string name="calc_apercibimiento_q2">Tuvo apercibimientos en la 2° quincena</string>
     <string name="calc_calcular">Calcular recibo</string>
+    <string name="calc_rango_anios">%1$d - %2$d</string>
+    <string name="calc_dia_con_letra">%1$d\n%2$s</string>
+    <string name="calc_letra_justificada">J</string>
+    <string name="calc_letra_injustificada">I</string>
+    <string name="calc_letra_feriado">F</string>
     <string name="calc_resumen_quincena">Justificadas: %1$d · Injustificadas: %2$d · Feriados: %3$d</string>
     <string name="calc_ultimo_neto">Último neto calculado: %1$s</string>
     <string name="calc_error_sin_quincena">Habilita al menos una quincena para calcular.</string>

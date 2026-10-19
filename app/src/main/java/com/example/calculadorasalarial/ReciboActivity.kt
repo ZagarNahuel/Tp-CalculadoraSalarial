@@ -23,25 +23,14 @@ import java.text.NumberFormat
 import java.util.Locale
 import kotlin.math.abs
 
-/**
- * RECIBO — Pantalla de presentación de la liquidación.
- *
- * El motor de los importes vive en Liquidacion.kt (MotorLiquidacion), NO acá.
- * Acá recibimos los datos del formulario, mostramos Q1/Q2, guardamos el último
- * resultado si lo pide el usuario y preparamos el neto para devolverlo.
- *
- * Nota para el grupo: si se cambia una clave de Intent en una sola pantalla,
- * la otra no la va a encontrar. Hay que actualizar ambas.
- *
- * "Cambiar categoría": abre un selector, guarda la nueva categoría en SharedPreferences
- * (RepositorioUsuarios) y vuelve a liquidar el recibo en el momento.
- */
+// Pantalla del recibo: muestra la liquidación de cada quincena y explica cómo se calculó cada fila.
+// Las cuentas las hace MotorLiquidacion (Liquidacion.kt); acá solo se muestran los resultados.
+// Las claves de los Intent (por ejemplo "CATEGORIA") tienen que ser iguales en la Calculadora y acá.
 class ReciboActivity : AppCompatActivity() {
-
     companion object {
-        // Contrato de SALIDA hacia CalculadoraActivity (mantener nombres y tipos).
-        const val EXTRA_RESULTADO_NETO = "RESULTADO_NETO"   // Double
-        const val EXTRA_ACCION_RECIBO = "ACCION_RECIBO"     // String
+        // Lo que el Recibo le devuelve a la Calculadora.
+        const val EXTRA_RESULTADO_NETO = "RESULTADO_NETO"
+        const val EXTRA_ACCION_RECIBO = "ACCION_RECIBO"
         const val ACCION_NUEVA_CONSULTA = "NUEVA_CONSULTA"
 
         private const val PREFS_RECIBO = "recibo_ultima_consulta_v1"
@@ -52,7 +41,6 @@ class ReciboActivity : AppCompatActivity() {
         maximumFractionDigits = 2
     }
 
-    // Datos de la consulta (llegan desde CalculadoraActivity por Intent)
     private var categoria = ""
     private var antiguedad = 0
     private var mes = -1
@@ -122,17 +110,14 @@ class ReciboActivity : AppCompatActivity() {
         btnCompartir = findViewById(R.id.btnCompartirRecibo)
         tvPistaConceptos = findViewById(R.id.tvPistaConceptos)
 
-        // Cambiar la categoría es lo único que se modifica desde acá; el resto se corrige volviendo (Atrás).
         tvCambiarCategoria.setOnClickListener { mostrarSelectorCategoria() }
         btnNuevaConsulta.setOnClickListener {
-            // No abrimos una segunda Calculadora: el receptor decide limpiar la actual, eso es todo.
             setResult(RESULT_OK, Intent().putExtra(EXTRA_ACCION_RECIBO, ACCION_NUEVA_CONSULTA))
             finish()
         }
-        setResult(RESULT_CANCELED) // Seguro por defecto: no se devuelve ningún neto inventado.
+        setResult(RESULT_CANCELED)
 
-        // Claves de ENTRADA que manda CalculadoraActivity.
-        // Si faltara la categoría, se toma la de la cuenta iniciada.
+        // Datos que manda la Calculadora. Si faltara la categoría, se usa la de la cuenta iniciada.
         categoria = intent.getStringExtra("CATEGORIA")?.takeIf { it.isNotBlank() }
             ?: RepositorioUsuarios(this).usuarioActual()?.categoria
             ?: ""
@@ -150,35 +135,35 @@ class ReciboActivity : AppCompatActivity() {
         validarYMostrar()
     }
 
-    /** Valida los datos recibidos, liquida con MotorLiquidacion y dibuja el recibo. */
+    // Revisa los datos, calcula con el motor y dibuja el recibo.
     private fun validarYMostrar() {
-        // Se vuelve a mostrar todo: puede haber quedado oculto por un error anterior.
         resumenCard.visibility = View.VISIBLE
         controlesCard.visibility = View.VISIBLE
         checkMostrarDetalle.visibility = View.VISIBLE
         tvPistaConceptos.visibility = View.VISIBLE
 
-        val estadoRecibido = estadoOriginal
+        val estadoRecibido = estadoOriginal ?: IntArray(0)
         val datosValidos = MotorLiquidacion.escalaPara(categoria) != null &&
                 mes in 1..12 && anio in 1900..2100 &&
                 antiguedad in 0..100 && horasQ1 in 0..300 && horasQ2 in 0..300 &&
-                estadoRecibido != null && estadoRecibido.size >= 32 &&
+                estadoRecibido.size >= 32 &&
                 estadoRecibido.all { it in 0..MotorLiquidacion.ESTADO_MAXIMO } && (mostrarQ1 || mostrarQ2)
 
-        if (!datosValidos || estadoRecibido == null) {
+        if (!datosValidos) {
             mostrarError(getString(R.string.recibo_error_datos))
             return
         }
 
-        // Los valores se validaron arriba. Mes y año permiten conocer el último día.
+        // Si se pasó de un mes largo a uno corto, los días de más no cuentan.
         val ultimoDia = Fechas.ultimoDiaDelMes(anio, mes)
         val estadoDias = estadoRecibido.copyOf()
-        // Si cambiaron de marzo a febrero, los viejos días 29/30/31 no deben contar.
         for (dia in ultimoDia + 1..31) estadoDias[dia] = 0
         estadoLiquidado = estadoDias
 
         val periodo = "${nombreMes(mes)} $anio"
-        tvEncabezado.text = getString(R.string.recibo_cabecera_datos, periodo, categoria, antiguedad)
+        tvEncabezado.text = getString(
+            R.string.recibo_cabecera_datos, periodo, MotorLiquidacion.nombreVisible(categoria), textoAnios(antiguedad)
+        )
 
         val resultado = try {
             MotorLiquidacion.calcularMes(
@@ -192,8 +177,8 @@ class ReciboActivity : AppCompatActivity() {
                 apercibimientoQ1 = apercibimientoQ1,
                 apercibimientoQ2 = apercibimientoQ2
             )
+        // Si el cálculo falla, es mejor avisar que mostrar un sueldo de $ 0.
         } catch (error: Exception) {
-            // Fallar claramente es preferible a mostrar un sueldo falso de $ 0.
             Log.e("ReciboActivity", "Error al calcular el sueldo", error)
             mostrarError(getString(R.string.recibo_error_calculo))
             return
@@ -226,7 +211,7 @@ class ReciboActivity : AppCompatActivity() {
             return
         }
 
-        // Resumen y tablas usan EXACTAMENTE la misma fuente: MotorLiquidacion.
+        // El resumen y las tablas salen de los mismos números.
         tvResumenRemunerativo.text = getString(R.string.recibo_resumen_remunerativo, dinero(remunerativo))
         tvResumenNoRemunerativo.text = getString(R.string.recibo_resumen_no_remunerativo, dinero(noRemunerativo))
         tvResumenDescuentos.text = getString(R.string.recibo_resumen_descuentos, dinero(descuentos))
@@ -248,9 +233,9 @@ class ReciboActivity : AppCompatActivity() {
             else -> getString(R.string.recibo_quincenas_segunda)
         }
 
+        // Guarda el neto y lo vuelve a leer para comprobar que se guardó bien.
         btnGuardar.setOnClickListener {
             val prefs = getSharedPreferences(PREFS_RECIBO, MODE_PRIVATE)
-            // commit() confirma si se guardó en disco; se usa sólo al pulsar Guardar.
             val guardado = prefs.edit()
                 .putString("neto", neto.toString())
                 .putString("periodo", periodo)
@@ -262,7 +247,6 @@ class ReciboActivity : AppCompatActivity() {
             Toast.makeText(this, if (correcto) R.string.recibo_guardado_ok else R.string.recibo_guardado_error,
                 Toast.LENGTH_LONG).show()
         }
-        // Consultar también cuando todavía no hay nada guardado.
         btnVerGuardado.setOnClickListener { mostrarUltimoGuardado() }
         btnCompartir.setOnClickListener {
             val resumen = buildString {
@@ -285,15 +269,11 @@ class ReciboActivity : AppCompatActivity() {
                 Toast.makeText(this, R.string.recibo_compartir_sin_apps, Toast.LENGTH_SHORT).show()
             }
         }
-        // Devuelve el neto tanto con «Nueva consulta» como con "Atrás".
-        // CalculadoraActivity lo recibe con un ActivityResultLauncher.
+        // Al volver (con el botón o con Atrás) la Calculadora recibe el neto calculado.
         setResult(RESULT_OK, Intent().putExtra(EXTRA_RESULTADO_NETO, neto))
     }
 
-    // ------------------------------------------------------------------
-    // Cambiar categoría
-    // ------------------------------------------------------------------
-
+    // Abre la lista para elegir otra categoría.
     private fun mostrarSelectorCategoria() {
         val opciones = MotorLiquidacion.categorias
         MaterialAlertDialogBuilder(this)
@@ -307,7 +287,7 @@ class ReciboActivity : AppCompatActivity() {
             .show()
     }
 
-    /** Guarda la categoría elegida (queda para las próximas consultas) y recalcula el recibo. */
+    // Guarda la categoría nueva para las próximas consultas y recalcula el recibo.
     private fun cambiarCategoria(nueva: String) {
         RepositorioUsuarios(this).actualizarCategoria(nueva)
         categoria = nueva
@@ -323,7 +303,7 @@ class ReciboActivity : AppCompatActivity() {
         checkMostrarDetalle.visibility = View.GONE
         tvPistaConceptos.visibility = View.GONE
         tvTituloTotal.setText(R.string.recibo_error_titulo)
-        tvNetoTotal.text = "—"
+        tvNetoTotal.text = getString(R.string.recibo_valor_inicial)
         tvDetalleTotal.text = mensaje
         setResult(RESULT_CANCELED)
     }
@@ -347,6 +327,7 @@ class ReciboActivity : AppCompatActivity() {
             .show()
     }
 
+    // Comprobación: remunerativo + no remunerativo - descuentos tiene que dar el neto.
     private fun cuadraLiquidacion(r: ResultadoQuincena): Boolean {
         val importes = listOf(r.remSujetas, r.remExentas, r.totalDescuentos, r.totalNeto)
         return importes.all { it.isFinite() } &&
@@ -358,13 +339,13 @@ class ReciboActivity : AppCompatActivity() {
     private fun numero(valor: Double): String = formato.format(valor)
     private fun dinero(valor: Double): String = "$ ${numero(valor)}"
 
+    // Cada fila se puede tocar: abre el panel que explica cómo se calculó ese concepto.
     private fun poblarTabla(tabla: TableLayout, d: ResultadoQuincena, quincena: Int) {
         tabla.removeAllViews()
         agregarFila(tabla, getString(R.string.recibo_col_concepto), getString(R.string.recibo_col_cantidad),
             getString(R.string.recibo_col_remunerativo), getString(R.string.recibo_col_no_remunerativo),
             getString(R.string.recibo_col_descuentos), encabezado = true)
 
-        // Al tocar una fila se abre el Fragment que explica cómo se calculó ese concepto.
         fun linea(nombre: Int, concepto: ConceptoRecibo, cantidad: String, remun: Double? = null,
                   noRem: Double? = null, desc: Double? = null) {
             agregarFila(tabla, getString(nombre), cantidad,
@@ -389,10 +370,9 @@ class ReciboActivity : AppCompatActivity() {
         agregarFila(tabla, getString(R.string.recibo_fila_totales), "—", numero(d.remSujetas),
             numero(d.remExentas), numero(d.totalDescuentos), total = true,
             alTocar = { mostrarExplicacion(ConceptoRecibo.TOTALES, d, quincena) })
-        // El neto NO va en la columna Descuentos: se muestra aparte, debajo de cada tabla.
     }
 
-    /** Abre el panel (Fragment) con la explicación del concepto tocado, con los números de esta quincena. */
+    // Arma el panel con la explicación y los números de esa quincena.
     private fun mostrarExplicacion(concepto: ConceptoRecibo, d: ResultadoQuincena, quincena: Int) {
         if (supportFragmentManager.findFragmentByTag(ExplicacionConceptoFragment.TAG) != null) return
         val escala = MotorLiquidacion.escalaPara(categoria) ?: return
@@ -430,8 +410,8 @@ class ReciboActivity : AppCompatActivity() {
         alTocar: (() -> Unit)? = null
     ) {
         val fila = TableRow(this)
+        // Fila tocable, con el efecto de toque normal de Android.
         if (alTocar != null) {
-            // Fila tocable: con el efecto de "ondita" estándar de Android
             val fondoTocable = TypedValue()
             theme.resolveAttribute(android.R.attr.selectableItemBackground, fondoTocable, true)
             fila.foreground = ContextCompat.getDrawable(this, fondoTocable.resourceId)

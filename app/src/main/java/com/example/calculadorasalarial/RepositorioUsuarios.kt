@@ -9,7 +9,7 @@ import java.util.Locale
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
 
-/** Datos del usuario registrado que necesitan las pantallas. La contraseña nunca sale del repositorio. */
+// Los datos de una cuenta que necesitan las pantallas. La contraseña nunca sale de este archivo.
 data class Usuario(
     val nombre: String,
     val email: String,
@@ -20,19 +20,9 @@ data class Usuario(
 
 enum class ErrorRegistro { EMAIL_REPETIDO, USUARIO_REPETIDO }
 
-/**
- * Único punto de acceso a SharedPreferences para cuentas y sesión.
- *
- *  - Registro  -> [registrar]            guarda nombre, e-mail, usuario, categoría, antigüedad y
- *                                        la contraseña (con sal + hash, nunca en texto plano).
- *  - Login     -> [iniciarSesion]        vuelve a leer lo guardado y valida que coincida.
- *  - Pantallas -> [usuarioActual]        categoría y antigüedad salen de acá.
- *  - Recibo    -> [actualizarCategoria]  cambia la categoría y la deja persistida.
- *
- * Soporta varias cuentas en el mismo celular (la clave de cada una es su e-mail).
- */
+// Guarda y lee las cuentas en el celular (SharedPreferences).
+// El Registro guarda, el Login comprueba, y las demás pantallas piden de acá la categoría y la antigüedad.
 class RepositorioUsuarios(context: Context) {
-
     private val prefs: SharedPreferences =
         context.applicationContext.getSharedPreferences(NOMBRE_PREFS, Context.MODE_PRIVATE)
 
@@ -45,7 +35,6 @@ class RepositorioUsuarios(context: Context) {
         private const val LONGITUD_SAL_BYTES = 16
     }
 
-    // ---------------------------------------------------------------- claves
     private fun clave(email: String, campo: String) = "usr|$email|$campo"
     private fun claveAlias(usuario: String) = "alias|$usuario"
 
@@ -54,8 +43,7 @@ class RepositorioUsuarios(context: Context) {
 
     private fun existeEmail(email: String) = prefs.contains(clave(email, "hash"))
 
-    // ---------------------------------------------------------------- registro
-    /** Devuelve null si se registró bien, o el motivo por el que no se pudo. */
+    // Guarda una cuenta nueva. Devuelve null si salió bien, o el motivo si no se pudo.
     fun registrar(
         nombre: String,
         email: String,
@@ -70,6 +58,7 @@ class RepositorioUsuarios(context: Context) {
         if (existeEmail(correo)) return ErrorRegistro.EMAIL_REPETIDO
         if (prefs.contains(claveAlias(alias))) return ErrorRegistro.USUARIO_REPETIDO
 
+        // La contraseña no se guarda como se escribe: se guarda una huella calculada con un valor al azar (la sal).
         val sal = ByteArray(LONGITUD_SAL_BYTES).also { SecureRandom().nextBytes(it) }
 
         prefs.edit()
@@ -84,8 +73,7 @@ class RepositorioUsuarios(context: Context) {
         return null
     }
 
-    // ---------------------------------------------------------------- sesión
-    /** [identificador] puede ser el e-mail o el nombre de usuario. */
+    // Se puede entrar con el e-mail o con el nombre de usuario.
     fun iniciarSesion(identificador: String, password: String, mantenerSesion: Boolean): Boolean {
         val correo = emailDe(identificador) ?: return false
         val sal = prefs.getString(clave(correo, "sal"), null)?.let { deTexto(it) } ?: return false
@@ -100,7 +88,7 @@ class RepositorioUsuarios(context: Context) {
         return true
     }
 
-    /** True si hay una sesión iniciada con "Mantener sesión" tildado. */
+    // Es verdadero si el usuario eligió 'Mantener sesión'.
     fun haySesionGuardada(): Boolean =
         prefs.getBoolean(MANTENER_SESION, false) && usuarioActual() != null
 
@@ -124,13 +112,11 @@ class RepositorioUsuarios(context: Context) {
             .apply()
     }
 
-    // ---------------------------------------------------------------- datos de la cuenta
     fun actualizarCategoria(categoria: String) {
         val correo = prefs.getString(SESION_EMAIL, null) ?: return
         prefs.edit().putString(clave(correo, "categoria"), categoria).apply()
     }
 
-    // ---------------------------------------------------------------- internos
     private fun emailDe(identificador: String): String? {
         val dato = identificador.trim().lowercase(Locale.ROOT)
         if (dato.isEmpty()) return null
@@ -141,8 +127,8 @@ class RepositorioUsuarios(context: Context) {
         }
     }
 
-    // PBKDF2 con sal aleatoria. Para una app real conviene además guardar los datos en
-    // EncryptedSharedPreferences / Keystore; para el TP alcanza con no guardar la clave en texto plano.
+    // Convierte la contraseña en una huella que no se puede deshacer.
+    // Para una app real habría que sumar un almacenamiento cifrado; para el TP alcanza con no guardarla tal cual.
     private fun hash(password: String, sal: ByteArray): ByteArray {
         val especificacion = PBEKeySpec(password.toCharArray(), sal, ITERACIONES, LONGITUD_HASH_BITS)
         return SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1").generateSecret(especificacion).encoded

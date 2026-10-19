@@ -37,16 +37,18 @@
     <string name="login_credenciales_invalidas">Usuario o contraseña incorrectos.</string>
     <string name="login_cuenta_creada">Cuenta creada. Inicia sesión para continuar.</string>
 
+    <string name="comun_mostrar_password">Mostrar contraseña</string>
+    <string name="comun_ocultar_password">Ocultar contraseña</string>
+
     <!-- Registro -->
     <string name="reg_titulo">Registro</string>
-    <string name="reg_label_nombre">Nombre y Apellido/s</string>
-    <string name="reg_label_email">E-mail</string>
-    <string name="reg_label_usuario">Nombre de usuario</string>
-    <string name="reg_label_password">Contraseña</string>
-    <string name="reg_label_confirmar">Repetir contraseña</string>
-    <string name="reg_label_categoria">Categoría</string>
-    <string name="reg_label_antiguedad">Antigüedad</string>
-    <string name="reg_hint_antiguedad">Años completos (0 si aún no cumpliste 1)</string>
+    <string name="reg_hint_nombre">Nombre y apellido</string>
+    <string name="reg_hint_email">E-mail</string>
+    <string name="reg_hint_usuario">Nombre de usuario</string>
+    <string name="reg_hint_password">Contraseña</string>
+    <string name="reg_hint_confirmar">Repetir contraseña</string>
+    <string name="reg_ayuda_antiguedad">Años completos. Si todavía no cumpliste 1 año, ingresá 0.</string>
+    <string name="reg_hint_antiguedad">Años de antigüedad</string>
     <string name="reg_crear">Crear usuario</string>
     <string name="reg_volver_login">¿Ya tienes una cuenta? Inicia sesión</string>
     <string name="reg_error_nombre">Ingresá tu nombre y apellido</string>
@@ -61,14 +63,13 @@
 
     <!-- Calculadora -->
     <string name="calc_titulo">Calculadora de sueldo</string>
-    <string name="calc_cerrar_sesion">Cerrar sesión</string>
+    <string name="calc_atras">← Atrás</string>
     <string name="calc_datos_empleado">%1$s · %2$s · Antigüedad: %3$d años</string>
-    <string name="calc_ayuda_marcas">Tocá un día para marcar una falta. Mantené presionado para marcar un feriado trabajado.</string>
-    <string name="calc_leyenda_trabajado">Trabajado</string>
-    <string name="calc_leyenda_justificada">Justificada (J)</string>
-    <string name="calc_leyenda_domingo">Domingo (no se marca)</string>
-    <string name="calc_leyenda_injustificada">Injustificada (I)</string>
-    <string name="calc_leyenda_feriado">Feriado trabajado (F): se paga doble</string>
+    <string name="calc_ayuda_marcas">Tocá el calendario para interactuar</string>
+    <string name="calc_leyenda_trabajado">Día trabajado</string>
+    <string name="calc_leyenda_justificada">Falta justificada</string>
+    <string name="calc_leyenda_injustificada">Falta injustificada</string>
+    <string name="calc_leyenda_feriado">Feriado</string>
     <string name="calc_habilitar_q1">Habilitar 1° quincena (días 1 al 15)</string>
     <string name="calc_habilitar_q2">Habilitar 2° quincena (día 16 al fin de mes)</string>
     <string name="calc_horas_extra_q1" formatted="false">Horas extra al 100% (1° quincena)</string>

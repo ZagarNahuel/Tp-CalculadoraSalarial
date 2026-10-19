@@ -16,6 +16,7 @@
     <string name="recibo_resumen_no_remunerativo">No remunerativo: %1$s</string>
     <string name="recibo_resumen_descuentos">Descuentos: −%1$s</string>
     <string name="recibo_resumen_neto">Neto a cobrar: %1$s</string>
+    <string name="recibo_pista_conceptos">Tocá un concepto de la tabla para ver cómo se calculó</string>
     <string name="recibo_mostrar_desglose">Mostrar desglose de conceptos</string>
     <string name="recibo_titulo_q1">Primera quincena · días 1 al 15</string>
     <string name="recibo_titulo_q2">Segunda quincena · días 16 al último</string>
@@ -29,7 +30,6 @@
     <string name="recibo_boton_guardar">Guardar último resultado</string>
     <string name="recibo_boton_ver_guardado">Ver último resultado guardado</string>
     <string name="recibo_boton_compartir">Compartir resumen</string>
-    <string name="recibo_boton_ayuda">¿Qué significan estos conceptos?</string>
     <string name="recibo_nueva_consulta">Nueva consulta</string>
     <string name="recibo_advertencia">Liquidación informativa según los valores configurados en la aplicación. No constituye un recibo de sueldo oficial.</string>
     <string name="recibo_quincenas_ambas">primera y segunda quincena</string>
@@ -46,8 +46,6 @@
     <string name="recibo_compartir_quincenas">Quincenas: %1$s</string>
     <string name="recibo_compartir_selector">Compartir resumen salarial</string>
     <string name="recibo_compartir_sin_apps">No hay aplicaciones disponibles para compartir.</string>
-    <string name="recibo_ayuda_titulo">Ayuda para leer el recibo</string>
-    <string name="recibo_ayuda_texto">Remunerativo: importes que el motor considera sujetos a retenciones.\n\nNo remunerativo: conceptos que el motor muestra por separado, como viáticos y refrigerio.\n\nDescuentos: deducciones calculadas por el motor.\n\nNeto a cobrar: remunerativo + no remunerativo − descuentos.\n\nLos importes dependen de las reglas configuradas en la aplicación.</string>
     <string name="recibo_error_titulo">NO SE PUEDE GENERAR EL RECIBO</string>
     <string name="recibo_error_datos">Faltan datos válidos o ninguna quincena está seleccionada. Volvé a la Calculadora para revisarlos.</string>
     <string name="recibo_error_calculo">El motor no pudo calcular esta liquidación. Revisá los datos antes de intentarlo nuevamente.</string>

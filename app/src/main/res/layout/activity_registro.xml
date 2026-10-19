@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Diseño de la pantalla de Registro (franja azul, título grande y cada campo con su etiqueta arriba).
+    Registro con el mismo formato que el Login: fondo claro, franja azul, título centrado y
+    campos celestes redondeados con el texto de ayuda adentro (hint).
     Los ids van en camelCase, sin puntos ni "ñ": son los que usa RegistroActivity.kt.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -9,7 +10,7 @@
     android:id="@+id/raizRegistro"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/calc_fondo"
     android:orientation="vertical"
     tools:context=".RegistroActivity">
 
@@ -32,162 +33,179 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:paddingHorizontal="20dp"
-            android:paddingBottom="24dp">
+            android:paddingHorizontal="36dp"
+            android:paddingVertical="24dp">
 
             <TextView
                 android:id="@+id/tvTituloRegistro"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="28dp"
+                android:gravity="center"
                 android:text="@string/reg_titulo"
                 android:textColor="@color/calc_azul"
-                android:textSize="40sp"
+                android:textSize="32sp"
                 android:textStyle="bold" />
 
-            <!-- 1. Nombre y Apellido -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:labelFor="@id/etNombreRegistro"
-                android:text="@string/reg_label_nombre"
-                android:textSize="20sp" />
-
+            <!-- 1. Nombre y apellido -->
             <EditText
                 android:id="@+id/etNombreRegistro"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginBottom="16dp"
                 android:autofillHints="name"
+                android:background="@drawable/fondo_campo_celeste"
+                android:gravity="center"
+                android:hint="@string/reg_hint_nombre"
                 android:inputType="textPersonName|textCapWords"
-                android:minHeight="48dp"
-                android:textSize="20sp" />
+                android:textColor="@color/white"
+                android:textColorHint="@color/calc_hint_campo" />
 
-            <!-- 2. Mail -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:labelFor="@id/etEmailRegistro"
-                android:text="@string/reg_label_email"
-                android:textSize="20sp" />
-
+            <!-- 2. E-mail -->
             <EditText
                 android:id="@+id/etEmailRegistro"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginBottom="16dp"
                 android:autofillHints="emailAddress"
+                android:background="@drawable/fondo_campo_celeste"
+                android:gravity="center"
+                android:hint="@string/reg_hint_email"
                 android:inputType="textEmailAddress"
-                android:minHeight="48dp"
-                android:textSize="20sp" />
+                android:textColor="@color/white"
+                android:textColorHint="@color/calc_hint_campo" />
 
             <!-- 3. Nombre de usuario -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:labelFor="@id/etUsuarioRegistro"
-                android:text="@string/reg_label_usuario"
-                android:textSize="20sp" />
-
             <EditText
                 android:id="@+id/etUsuarioRegistro"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginBottom="16dp"
                 android:autofillHints="username"
+                android:background="@drawable/fondo_campo_celeste"
+                android:gravity="center"
+                android:hint="@string/reg_hint_usuario"
                 android:inputType="text"
-                android:minHeight="48dp"
-                android:textSize="20sp" />
+                android:textColor="@color/white"
+                android:textColorHint="@color/calc_hint_campo" />
 
-            <!-- 4. Contraseña -->
-            <TextView
+            <!-- 4. Contraseña (con ojo dentro de la caja) -->
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:labelFor="@id/etPasswordRegistro"
-                android:text="@string/reg_label_password"
-                android:textSize="20sp" />
+                android:layout_height="50dp"
+                android:layout_marginBottom="16dp">
 
-            <EditText
-                android:id="@+id/etPasswordRegistro"
+                <EditText
+                    android:id="@+id/etPasswordRegistro"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:autofillHints="newPassword"
+                    android:background="@drawable/fondo_campo_celeste"
+                    android:gravity="center"
+                    android:hint="@string/reg_hint_password"
+                    android:inputType="textPassword"
+                    android:paddingStart="48dp"
+                    android:paddingEnd="48dp"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/calc_hint_campo" />
+
+                <ImageView
+                    android:id="@+id/ivOjoPassword"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="end|center_vertical"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/comun_mostrar_password"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_ojo_tachado" />
+            </FrameLayout>
+
+            <!-- 5. Repetir contraseña (con ojo dentro de la caja) -->
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:autofillHints="newPassword"
-                android:inputType="textPassword"
-                android:minHeight="48dp"
-                android:textSize="20sp" />
+                android:layout_height="50dp"
+                android:layout_marginBottom="16dp">
 
-            <!-- 5. Repetir contraseña -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:labelFor="@id/etConfirmPasswordRegistro"
-                android:text="@string/reg_label_confirmar"
-                android:textSize="20sp" />
+                <EditText
+                    android:id="@+id/etConfirmPasswordRegistro"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:autofillHints="newPassword"
+                    android:background="@drawable/fondo_campo_celeste"
+                    android:gravity="center"
+                    android:hint="@string/reg_hint_confirmar"
+                    android:inputType="textPassword"
+                    android:paddingStart="48dp"
+                    android:paddingEnd="48dp"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/calc_hint_campo" />
 
-            <EditText
-                android:id="@+id/etConfirmPasswordRegistro"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:autofillHints="newPassword"
-                android:inputType="textPassword"
-                android:minHeight="48dp"
-                android:textSize="20sp" />
+                <ImageView
+                    android:id="@+id/ivOjoConfirmar"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="end|center_vertical"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/comun_mostrar_password"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_ojo_tachado" />
+            </FrameLayout>
 
-            <!-- 6. Selector de categoría (Spinner) -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:labelFor="@id/spCategoriaRegistro"
-                android:text="@string/reg_label_categoria"
-                android:textSize="20sp" />
-
+            <!-- 6. Categoría: mismo formato que el selector de mes de la Calculadora -->
             <Spinner
                 android:id="@+id/spCategoriaRegistro"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:entries="@array/lista_categorias"
-                android:minHeight="48dp" />
+                android:layout_height="50dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/fondo_spinner_celeste"
+                android:paddingStart="16dp"
+                android:paddingEnd="40dp"
+                android:popupBackground="@color/white" />
 
-            <!-- 7. Años de antigüedad -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:labelFor="@id/etAntiguedadRegistro"
-                android:text="@string/reg_label_antiguedad"
-                android:textSize="20sp" />
-
+            <!-- 7. Años de antigüedad (arranca vacío) -->
             <EditText
                 android:id="@+id/etAntiguedadRegistro"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="32dp"
+                android:layout_height="50dp"
+                android:background="@drawable/fondo_campo_celeste"
+                android:gravity="center"
                 android:hint="@string/reg_hint_antiguedad"
                 android:importantForAutofill="no"
                 android:inputType="number"
                 android:maxLength="2"
-                android:minHeight="48dp"
-                android:textSize="20sp" />
+                android:textColor="@color/white"
+                android:textColorHint="@color/calc_hint_campo" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="28dp"
+                android:gravity="center"
+                android:text="@string/reg_ayuda_antiguedad"
+                android:textColor="@color/calc_azul"
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/btnRegistrar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="40dp"
-                android:layout_marginBottom="12dp"
+                android:layout_width="220dp"
+                android:layout_height="55dp"
                 android:text="@string/reg_crear"
+                android:textAllCaps="false"
                 android:textColor="@color/white"
-                android:textSize="20sp"
-                android:textStyle="bold"
+                android:textSize="16sp"
                 app:backgroundTint="@color/calc_azul" />
 
-            <TextView
+            <!-- Mismo estilo que "Regístrate" en el Login -->
+            <Button
                 android:id="@+id/tvVolverALogin"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="true"
-                android:gravity="center"
-                android:minHeight="48dp"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="@color/white"
                 android:text="@string/reg_volver_login"
-                android:textColor="@color/calc_azul"
-                android:textSize="15sp" />
+                android:textAllCaps="false"
+                android:textColor="@color/calc_azul" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

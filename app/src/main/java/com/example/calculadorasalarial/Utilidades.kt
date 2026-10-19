@@ -1,7 +1,16 @@
 package com.example.calculadorasalarial
 
 import android.app.Activity
+import android.content.Context
+import android.graphics.Color
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.view.View
+import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -84,4 +93,40 @@ fun Activity.ajustarBordesDelSistema(raiz: View, banda: View? = null) {
         }
         insets
     }
+}
+
+/**
+ * Ícono de ojo dentro del campo de contraseña (al final de la caja): al tocarlo se muestra u
+ * oculta lo escrito. Empieza oculta: ojo tachado = oculta, ojo abierto = visible.
+ */
+fun configurarOjoContrasena(campo: EditText, ojo: ImageView) {
+    fun aplicar(visible: Boolean) {
+        campo.transformationMethod =
+            if (visible) HideReturnsTransformationMethod.getInstance() else PasswordTransformationMethod.getInstance()
+        campo.setSelection(campo.text.length) // el cursor no salta al principio al cambiar
+        ojo.setImageResource(if (visible) R.drawable.ic_ojo else R.drawable.ic_ojo_tachado)
+        ojo.contentDescription = ojo.context.getString(
+            if (visible) R.string.comun_ocultar_password else R.string.comun_mostrar_password
+        )
+    }
+
+    var visible = false
+    aplicar(visible)
+    ojo.setOnClickListener {
+        visible = !visible
+        aplicar(visible)
+    }
+}
+
+/** Adaptador para los Spinner con fondo celeste (fondo_spinner_celeste): el elemento elegido se ve en blanco. */
+fun Context.adaptadorSpinnerBlanco(opciones: Array<String>): ArrayAdapter<String> {
+    val adaptador = object : ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, opciones) {
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+            val vista = super.getView(position, convertView, parent) as TextView
+            vista.setTextColor(Color.WHITE)
+            return vista
+        }
+    }
+    adaptador.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+    return adaptador
 }

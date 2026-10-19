@@ -94,11 +94,21 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/tvPistaConceptos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/recibo_pista_conceptos"
+            android:textColor="@color/recibo_azul"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
         <CheckBox
             android:id="@+id/cbMostrarDetalleRecibo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="4dp"
             android:checked="true"
             android:text="@string/recibo_mostrar_desglose"
             android:textColor="@color/recibo_texto" />
@@ -254,13 +264,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/recibo_boton_compartir"
-                android:textAllCaps="false" />
-
-            <Button
-                android:id="@+id/btnAyudaRecibo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/recibo_boton_ayuda"
                 android:textAllCaps="false" />
         </LinearLayout>
 

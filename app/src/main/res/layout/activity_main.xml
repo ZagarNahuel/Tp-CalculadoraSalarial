@@ -54,19 +54,36 @@
                 android:textColor="@color/white"
                 android:textColorHint="@color/calc_hint_campo" />
 
-            <!-- 2. Contraseña -->
-            <EditText
-                android:id="@+id/etPasswordLogin"
+            <!-- 2. Contraseña: el ojo va dentro de la caja, fijo al final -->
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_marginBottom="40dp"
-                android:autofillHints="password"
-                android:background="@drawable/fondo_campo_celeste"
-                android:gravity="center"
-                android:hint="@string/login_hint_password"
-                android:inputType="textPassword"
-                android:textColor="@color/white"
-                android:textColorHint="@color/calc_hint_campo" />
+                android:layout_marginBottom="40dp">
+
+                <EditText
+                    android:id="@+id/etPasswordLogin"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:autofillHints="password"
+                    android:background="@drawable/fondo_campo_celeste"
+                    android:gravity="center"
+                    android:hint="@string/login_hint_password"
+                    android:inputType="textPassword"
+                    android:paddingStart="48dp"
+                    android:paddingEnd="48dp"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/calc_hint_campo" />
+
+                <ImageView
+                    android:id="@+id/ivOjoPassword"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="end|center_vertical"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/comun_mostrar_password"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_ojo_tachado" />
+            </FrameLayout>
 
             <Button
                 android:id="@+id/btnIngresar"

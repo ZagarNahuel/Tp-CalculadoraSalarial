@@ -67,12 +67,12 @@ object MotorLiquidacion {
 
     fun escalaPara(categoria: String): EscalaCategoria? = ESCALAS[categoria]
 
-    // Porcentajes de descuentos de ley y sindicales
-    private const val DESC_JUBILACION = 0.109961
-    private const val DESC_19032 = 0.029985
-    private const val DESC_23660 = 0.029985
-    private const val DESC_TURISMO = 0.009985
-    private const val DESC_SOLIDARIO = 0.019970
+    // Porcentajes de descuentos de ley y sindicales (sobre las remuneraciones sujetas)
+    const val DESC_JUBILACION = 0.109961
+    const val DESC_19032 = 0.029985
+    const val DESC_23660 = 0.029985
+    const val DESC_TURISMO = 0.009985
+    const val DESC_SOLIDARIO = 0.019970
 
     /**
      * Regla de antigüedad (años COMPLETOS):

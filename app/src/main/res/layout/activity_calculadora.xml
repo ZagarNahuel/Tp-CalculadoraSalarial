@@ -30,6 +30,20 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
+            <Button
+                android:id="@+id/btnAtras"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:minWidth="0dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="12dp"
+                android:text="@string/calc_atras"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -38,16 +52,6 @@
                 android:textColor="@color/white"
                 android:textSize="22sp"
                 android:textStyle="bold" />
-
-            <Button
-                android:id="@+id/btnCerrarSesion"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/calc_cerrar_sesion"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="13sp" />
         </LinearLayout>
 
         <TextView
@@ -129,12 +133,12 @@
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
                     android:layout_marginBottom="4dp"
-                    android:gravity="center_vertical"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
                     <View
                         android:layout_width="14dp"
-                        android:layout_height="16dp"
+                        android:layout_height="14dp"
                         android:layout_marginEnd="6dp"
                         android:background="@color/white" />
 
@@ -151,7 +155,7 @@
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
                     android:layout_marginBottom="4dp"
-                    android:gravity="center_vertical"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
                     <View
@@ -172,28 +176,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <View
-                        android:layout_width="14dp"
-                        android:layout_height="14dp"
-                        android:layout_marginEnd="6dp"
-                        android:background="@color/calc_domingo_fondo" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/calc_leyenda_domingo"
-                        android:textColor="@color/calc_azul"
-                        android:textSize="12sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:gravity="center_vertical"
+                    android:layout_marginBottom="0dp"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
                     <View
@@ -209,13 +193,13 @@
                         android:textColor="@color/calc_azul"
                         android:textSize="12sp" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_columnSpan="2"
                     android:layout_columnWeight="1"
-                    android:layout_marginTop="4dp"
-                    android:gravity="center_vertical"
+                    android:layout_marginBottom="0dp"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
                     <View

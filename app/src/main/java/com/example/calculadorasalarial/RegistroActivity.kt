@@ -6,7 +6,6 @@ import android.util.Patterns
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
@@ -47,7 +46,14 @@ class RegistroActivity : AppCompatActivity() {
         spCategoria = findViewById(R.id.spCategoriaRegistro)
         etAntiguedad = findViewById(R.id.etAntiguedadRegistro)
         val btnRegistrar = findViewById<Button>(R.id.btnRegistrar)
-        val tvVolverALogin = findViewById<TextView>(R.id.tvVolverALogin)
+        val btnVolverALogin = findViewById<Button>(R.id.tvVolverALogin)
+
+        // Selector de categoría con el mismo formato celeste que el de meses de la Calculadora
+        spCategoria.adapter = adaptadorSpinnerBlanco(resources.getStringArray(R.array.lista_categorias))
+
+        // Cada contraseña tiene su ojo (dentro del campo) para mostrarla u ocultarla
+        configurarOjoContrasena(etPassword, findViewById(R.id.ivOjoPassword))
+        configurarOjoContrasena(etConfirmar, findViewById(R.id.ivOjoConfirmar))
 
         btnRegistrar.setOnClickListener {
             if (!datosValidos()) return@setOnClickListener
@@ -73,7 +79,7 @@ class RegistroActivity : AppCompatActivity() {
             }
         }
 
-        tvVolverALogin.setOnClickListener { finish() }
+        btnVolverALogin.setOnClickListener { finish() }
     }
 
     /** Valida todos los campos; marca el primero con error y le da el foco. */

@@ -8,9 +8,7 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
@@ -19,6 +17,7 @@ import android.widget.LinearLayout
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.ColorRes
 import androidx.appcompat.app.AppCompatActivity
@@ -127,22 +126,12 @@ class CalculadoraActivity : AppCompatActivity() {
 
         mostrarDatosEmpleado()
 
-        findViewById<Button>(R.id.btnCerrarSesion).setOnClickListener {
-            repositorio.cerrarSesion()
-            irAlLogin()
-        }
+        // "Atrás" (el botón del encabezado y el del sistema) vuelve al login y cierra la sesión
+        findViewById<Button>(R.id.btnAtras).setOnClickListener { volverAlLogin() }
+        onBackPressedDispatcher.addCallback(this) { volverAlLogin() }
 
         // 2. Spinner de meses con texto blanco (igual que el año)
-        val meses = resources.getStringArray(R.array.lista_meses)
-        val adaptador = object : ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, meses) {
-            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-                val vista = super.getView(position, convertView, parent) as TextView
-                vista.setTextColor(Color.WHITE)
-                return vista
-            }
-        }
-        adaptador.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spMes.adapter = adaptador
+        spMes.adapter = adaptadorSpinnerBlanco(resources.getStringArray(R.array.lista_meses))
 
         // 3. Mes y año: los de hoy, o los que había antes de que Android recreara la pantalla
         if (savedInstanceState == null) {
@@ -272,6 +261,12 @@ class CalculadoraActivity : AppCompatActivity() {
     // ------------------------------------------------------------------
     // Navegación
     // ------------------------------------------------------------------
+
+    /** Vuelve al login cerrando la sesión: así "Mantener sesión" no salta el login al volver a entrar. */
+    private fun volverAlLogin() {
+        repositorio.cerrarSesion()
+        irAlLogin()
+    }
 
     /**
      * Abre el login borrando todas las pantallas anteriores de la pila,

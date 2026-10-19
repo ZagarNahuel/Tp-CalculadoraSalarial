@@ -37,6 +37,9 @@ class MainActivity : AppCompatActivity() {
             irCalculadora()
             return
         }
+        // Sin "Mantener sesión" cada vez que se abre la app se empieza desde el login:
+        // se borra cualquier sesión que haya quedado de la vez anterior.
+        repositorio.cerrarSesion()
 
         setContentView(R.layout.activity_main)
         ajustarBordesDelSistema(findViewById(R.id.raizLogin), findViewById(R.id.bandaSuperior))
@@ -46,6 +49,8 @@ class MainActivity : AppCompatActivity() {
         val cbMantener = findViewById<CheckBox>(R.id.cbMantenerSesion)
         val btnIngresar = findViewById<Button>(R.id.btnIngresar)
         val btnIrARegistro = findViewById<Button>(R.id.btnIrARegistro)
+
+        configurarOjoContrasena(etPassword, findViewById(R.id.ivOjoPassword))
 
         btnIngresar.setOnClickListener {
             val identificador = etUsuario.text.toString().trim()

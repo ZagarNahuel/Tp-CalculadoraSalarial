@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Typeface
+import android.util.TypedValue
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -63,8 +64,10 @@ class ReciboActivity : AppCompatActivity() {
     private var horasQ2 = 0
     private var apercibimientoQ1 = false
     private var apercibimientoQ2 = false
+    private var estadoLiquidado = IntArray(32)
 
     private lateinit var tvEncabezado: TextView
+    private lateinit var tvPistaConceptos: TextView
     private lateinit var seccionQ1: LinearLayout
     private lateinit var seccionQ2: LinearLayout
     private lateinit var tablaQ1: TableLayout
@@ -86,7 +89,6 @@ class ReciboActivity : AppCompatActivity() {
     private lateinit var btnGuardar: Button
     private lateinit var btnVerGuardado: Button
     private lateinit var btnCompartir: Button
-    private lateinit var btnAyuda: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -118,7 +120,7 @@ class ReciboActivity : AppCompatActivity() {
         btnGuardar = findViewById(R.id.btnGuardarRecibo)
         btnVerGuardado = findViewById(R.id.btnVerGuardadoRecibo)
         btnCompartir = findViewById(R.id.btnCompartirRecibo)
-        btnAyuda = findViewById(R.id.btnAyudaRecibo)
+        tvPistaConceptos = findViewById(R.id.tvPistaConceptos)
 
         // Cambiar la categoría es lo único que se modifica desde acá; el resto se corrige volviendo (Atrás).
         tvCambiarCategoria.setOnClickListener { mostrarSelectorCategoria() }
@@ -154,6 +156,7 @@ class ReciboActivity : AppCompatActivity() {
         resumenCard.visibility = View.VISIBLE
         controlesCard.visibility = View.VISIBLE
         checkMostrarDetalle.visibility = View.VISIBLE
+        tvPistaConceptos.visibility = View.VISIBLE
 
         val estadoRecibido = estadoOriginal
         val datosValidos = MotorLiquidacion.escalaPara(categoria) != null &&
@@ -172,6 +175,7 @@ class ReciboActivity : AppCompatActivity() {
         val estadoDias = estadoRecibido.copyOf()
         // Si cambiaron de marzo a febrero, los viejos días 29/30/31 no deben contar.
         for (dia in ultimoDia + 1..31) estadoDias[dia] = 0
+        estadoLiquidado = estadoDias
 
         val periodo = "${nombreMes(mes)} $anio"
         tvEncabezado.text = getString(R.string.recibo_cabecera_datos, periodo, categoria, antiguedad)
@@ -205,11 +209,11 @@ class ReciboActivity : AppCompatActivity() {
         seccionQ1.visibility = if (mostrarQ1) View.VISIBLE else View.GONE
         seccionQ2.visibility = if (mostrarQ2) View.VISIBLE else View.GONE
         if (mostrarQ1) {
-            poblarTabla(tablaQ1, q1)
+            poblarTabla(tablaQ1, q1, 1)
             tvNetoQ1.text = getString(R.string.recibo_neto_quincena, dinero(q1.totalNeto))
         }
         if (mostrarQ2) {
-            poblarTabla(tablaQ2, q2)
+            poblarTabla(tablaQ2, q2, 2)
             tvNetoQ2.text = getString(R.string.recibo_neto_quincena, dinero(q2.totalNeto))
         }
 
@@ -281,14 +285,6 @@ class ReciboActivity : AppCompatActivity() {
                 Toast.makeText(this, R.string.recibo_compartir_sin_apps, Toast.LENGTH_SHORT).show()
             }
         }
-        btnAyuda.setOnClickListener {
-            AlertDialog.Builder(this)
-                .setTitle(R.string.recibo_ayuda_titulo)
-                .setMessage(R.string.recibo_ayuda_texto)
-                .setPositiveButton(R.string.recibo_cerrar, null)
-                .show()
-        }
-
         // Devuelve el neto tanto con «Nueva consulta» como con "Atrás".
         // CalculadoraActivity lo recibe con un ActivityResultLauncher.
         setResult(RESULT_OK, Intent().putExtra(EXTRA_RESULTADO_NETO, neto))
@@ -325,6 +321,7 @@ class ReciboActivity : AppCompatActivity() {
         resumenCard.visibility = View.GONE
         controlesCard.visibility = View.GONE
         checkMostrarDetalle.visibility = View.GONE
+        tvPistaConceptos.visibility = View.GONE
         tvTituloTotal.setText(R.string.recibo_error_titulo)
         tvNetoTotal.text = "—"
         tvDetalleTotal.text = mensaje
@@ -361,35 +358,64 @@ class ReciboActivity : AppCompatActivity() {
     private fun numero(valor: Double): String = formato.format(valor)
     private fun dinero(valor: Double): String = "$ ${numero(valor)}"
 
-    private fun poblarTabla(tabla: TableLayout, d: ResultadoQuincena) {
+    private fun poblarTabla(tabla: TableLayout, d: ResultadoQuincena, quincena: Int) {
         tabla.removeAllViews()
         agregarFila(tabla, getString(R.string.recibo_col_concepto), getString(R.string.recibo_col_cantidad),
             getString(R.string.recibo_col_remunerativo), getString(R.string.recibo_col_no_remunerativo),
             getString(R.string.recibo_col_descuentos), encabezado = true)
 
-        fun linea(nombre: Int, cantidad: String, remun: Double? = null,
+        // Al tocar una fila se abre el Fragment que explica cómo se calculó ese concepto.
+        fun linea(nombre: Int, concepto: ConceptoRecibo, cantidad: String, remun: Double? = null,
                   noRem: Double? = null, desc: Double? = null) {
             agregarFila(tabla, getString(nombre), cantidad,
-                remun?.let { numero(it) } ?: "—", noRem?.let { numero(it) } ?: "—", desc?.let { numero(it) } ?: "—")
+                remun?.let { numero(it) } ?: "—", noRem?.let { numero(it) } ?: "—", desc?.let { numero(it) } ?: "—",
+                alTocar = { mostrarExplicacion(concepto, d, quincena) })
         }
 
-        linea(R.string.recibo_horas_normales, "${d.horasNormales} h", remun = d.valorHorasNormales)
-        linea(R.string.recibo_horas_100, "${d.horas100} h", remun = d.valorHoras100)
-        linea(R.string.recibo_horas_feriado, "${d.horasFeriado} h", remun = d.valorHorasFeriado)
-        linea(R.string.recibo_premio_puntualidad, "—", remun = d.premioPuntualidad)
-        linea(R.string.recibo_premio_asistencia, "—", remun = d.premioAsistencia)
-        linea(R.string.recibo_premio_perfecto, "—", remun = d.premioPerfecto)
-        linea(R.string.recibo_antiguedad, "${d.antiguedadPct}%", remun = d.antiguedadValor)
-        linea(R.string.recibo_viaticos, "${d.viaticosDias} días", noRem = d.viaticosValor)
-        linea(R.string.recibo_refrigerio, "${d.refrigerioDias} días", noRem = d.refrigerioValor)
-        linea(R.string.recibo_jubilacion, "—", desc = d.descJubilacion)
-        linea(R.string.recibo_ley_19032, "—", desc = d.descLey19032)
-        linea(R.string.recibo_ley_23660, "—", desc = d.descLey23660)
-        linea(R.string.recibo_fondo_turismo, "—", desc = d.descTurismo)
-        linea(R.string.recibo_aporte_solidario, "—", desc = d.descSolidario)
+        linea(R.string.recibo_horas_normales, ConceptoRecibo.HORAS_NORMALES, "${d.horasNormales} h", remun = d.valorHorasNormales)
+        linea(R.string.recibo_horas_100, ConceptoRecibo.HORAS_100, "${d.horas100} h", remun = d.valorHoras100)
+        linea(R.string.recibo_horas_feriado, ConceptoRecibo.HORAS_FERIADO, "${d.horasFeriado} h", remun = d.valorHorasFeriado)
+        linea(R.string.recibo_premio_puntualidad, ConceptoRecibo.PREMIO_PUNTUALIDAD, "—", remun = d.premioPuntualidad)
+        linea(R.string.recibo_premio_asistencia, ConceptoRecibo.PREMIO_ASISTENCIA, "—", remun = d.premioAsistencia)
+        linea(R.string.recibo_premio_perfecto, ConceptoRecibo.PREMIO_PERFECTO, "—", remun = d.premioPerfecto)
+        linea(R.string.recibo_antiguedad, ConceptoRecibo.ANTIGUEDAD, "${d.antiguedadPct}%", remun = d.antiguedadValor)
+        linea(R.string.recibo_viaticos, ConceptoRecibo.VIATICOS, "${d.viaticosDias} días", noRem = d.viaticosValor)
+        linea(R.string.recibo_refrigerio, ConceptoRecibo.REFRIGERIO, "${d.refrigerioDias} días", noRem = d.refrigerioValor)
+        linea(R.string.recibo_jubilacion, ConceptoRecibo.JUBILACION, "—", desc = d.descJubilacion)
+        linea(R.string.recibo_ley_19032, ConceptoRecibo.LEY_19032, "—", desc = d.descLey19032)
+        linea(R.string.recibo_ley_23660, ConceptoRecibo.LEY_23660, "—", desc = d.descLey23660)
+        linea(R.string.recibo_fondo_turismo, ConceptoRecibo.FONDO_TURISMO, "—", desc = d.descTurismo)
+        linea(R.string.recibo_aporte_solidario, ConceptoRecibo.APORTE_SOLIDARIO, "—", desc = d.descSolidario)
         agregarFila(tabla, getString(R.string.recibo_fila_totales), "—", numero(d.remSujetas),
-            numero(d.remExentas), numero(d.totalDescuentos), total = true)
+            numero(d.remExentas), numero(d.totalDescuentos), total = true,
+            alTocar = { mostrarExplicacion(ConceptoRecibo.TOTALES, d, quincena) })
         // El neto NO va en la columna Descuentos: se muestra aparte, debajo de cada tabla.
+    }
+
+    /** Abre el panel (Fragment) con la explicación del concepto tocado, con los números de esta quincena. */
+    private fun mostrarExplicacion(concepto: ConceptoRecibo, d: ResultadoQuincena, quincena: Int) {
+        if (supportFragmentManager.findFragmentByTag(ExplicacionConceptoFragment.TAG) != null) return
+        val escala = MotorLiquidacion.escalaPara(categoria) ?: return
+
+        val rango = if (quincena == 1) 1..15 else 16..Fechas.ultimoDiaDelMes(anio, mes)
+        fun contar(estado: Int) =
+            rango.count { !Fechas.esDomingo(anio, mes, it) && estadoLiquidado[it] == estado }
+
+        val datos = DatosExplicacion(
+            escala = escala,
+            antiguedad = antiguedad,
+            quincena = quincena,
+            horasExtra = if (quincena == 1) horasQ1 else horasQ2,
+            apercibimiento = if (quincena == 1) apercibimientoQ1 else apercibimientoQ2,
+            justificadas = contar(MotorLiquidacion.ESTADO_JUSTIFICADA),
+            injustificadas = contar(MotorLiquidacion.ESTADO_INJUSTIFICADA)
+        )
+        ExplicacionConceptoFragment
+            .nuevo(
+                ExplicacionRecibo.titulo(this, concepto),
+                ExplicacionRecibo.texto(this, concepto, d, datos)
+            )
+            .show(supportFragmentManager, ExplicacionConceptoFragment.TAG)
     }
 
     private fun agregarFila(
@@ -400,9 +426,19 @@ class ReciboActivity : AppCompatActivity() {
         noRemunerativo: String,
         descuentos: String,
         encabezado: Boolean = false,
-        total: Boolean = false
+        total: Boolean = false,
+        alTocar: (() -> Unit)? = null
     ) {
         val fila = TableRow(this)
+        if (alTocar != null) {
+            // Fila tocable: con el efecto de "ondita" estándar de Android
+            val fondoTocable = TypedValue()
+            theme.resolveAttribute(android.R.attr.selectableItemBackground, fondoTocable, true)
+            fila.foreground = ContextCompat.getDrawable(this, fondoTocable.resourceId)
+            fila.isClickable = true
+            fila.isFocusable = true
+            fila.setOnClickListener { alTocar() }
+        }
         if (encabezado) fila.setBackgroundColor(ContextCompat.getColor(this, R.color.recibo_fondo_cabecera_tabla))
         if (total) fila.setBackgroundColor(ContextCompat.getColor(this, R.color.recibo_fondo_total_tabla))
         val valores = listOf(concepto, cantidad, remunerativo, noRemunerativo, descuentos)

@@ -1,125 +1,284 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F7FB"
-    tools:context=".ReciboActivity"
-    tools:ignore="HardcodedText">
+    android:background="@color/recibo_fondo_pantalla"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="12dp">
+        android:padding="16dp">
 
-        <!-- Botón superior: <- Cambiar categoría / Volver -->
+        <!-- ID heredado: NO cambiar sin actualizar Kotlin. -->
         <TextView
             android:id="@+id/tvCambiarCategoria"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="← Cambiar categoría / Modificar datos"
-            android:textColor="#2B6EF6"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="12dp"
+            android:text="@string/recibo_volver"
+            android:textColor="@color/recibo_azul"
             android:textSize="14sp"
-            android:textStyle="bold"
-            android:paddingVertical="8dp"
-            android:layout_marginBottom="8dp" />
+            android:textStyle="bold" />
 
-        <!-- CARD PRINCIPAL DEL RECIBO -->
+        <TextView
+            android:id="@+id/tvHeaderRecibo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@color/recibo_azul"
+            android:padding="16dp"
+            android:text="@string/recibo_titulo"
+            android:textColor="@color/recibo_blanco"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <!-- Resumen superior: las cifras salen del MotorLiquidacion; este XML no calcula. -->
+        <LinearLayout
+            android:id="@+id/cardResumenRecibo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:background="@color/recibo_blanco"
+            android:elevation="2dp"
+            android:orientation="vertical"
+            android:padding="14dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/recibo_resumen_titulo"
+                android:textColor="@color/recibo_texto"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvResumenRemunerativo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/recibo_resumen_remunerativo_base"
+                android:textColor="@color/recibo_texto"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tvResumenNoRemunerativo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="@string/recibo_resumen_no_remunerativo_base"
+                android:textColor="@color/recibo_texto"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tvResumenDescuentos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="@string/recibo_resumen_descuentos_base"
+                android:textColor="@color/recibo_texto"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tvResumenNeto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/recibo_resumen_neto_base"
+                android:textColor="@color/recibo_verde_texto"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/cbMostrarDetalleRecibo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:checked="true"
+            android:text="@string/recibo_mostrar_desglose"
+            android:textColor="@color/recibo_texto" />
+
+        <LinearLayout
+            android:id="@+id/seccionQuincenaA"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/recibo_fondo_quincena"
+                android:padding="11dp"
+                android:text="@string/recibo_titulo_q1"
+                android:textColor="@color/recibo_texto"
+                android:textStyle="bold" />
+
+            <HorizontalScrollView
+                android:id="@+id/detalleTablaQ1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fillViewport="true"
+                android:scrollbars="horizontal">
+
+                <TableLayout
+                    android:id="@+id/tablaQuincenaA"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </HorizontalScrollView>
+
+            <TextView
+                android:id="@+id/tvNetoQ1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@color/recibo_fondo_verde"
+                android:gravity="end"
+                android:padding="12dp"
+                android:text="@string/recibo_neto_inicial"
+                android:textColor="@color/recibo_verde_texto"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/seccionQuincenaB"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/recibo_fondo_quincena"
+                android:padding="11dp"
+                android:text="@string/recibo_titulo_q2"
+                android:textColor="@color/recibo_texto"
+                android:textStyle="bold" />
+
+            <HorizontalScrollView
+                android:id="@+id/detalleTablaQ2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fillViewport="true"
+                android:scrollbars="horizontal">
+
+                <TableLayout
+                    android:id="@+id/tablaQuincenaB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </HorizontalScrollView>
+
+            <TextView
+                android:id="@+id/tvNetoQ2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@color/recibo_fondo_verde"
+                android:gravity="end"
+                android:padding="12dp"
+                android:text="@string/recibo_neto_inicial"
+                android:textColor="@color/recibo_verde_texto"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@color/recibo_fondo_total"
             android:orientation="vertical"
-            android:background="#FFFFFF"
-            android:elevation="4dp">
+            android:padding="16dp">
 
-            <!-- HEADER AZUL (Igual a .header del HTML) -->
-            <LinearLayout
+            <TextView
+                android:id="@+id/tvTituloTotal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#2B6EF6"
-                android:padding="16dp">
+                android:text="@string/recibo_total_mes"
+                android:textColor="@color/recibo_texto"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/tvHeaderRecibo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Recibo — Mes Octubre — CATEGORIA INICIAL"
-                    android:textColor="#FFFFFF"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <!-- CUERPO DEL RECIBO -->
-            <LinearLayout
+            <TextView
+                android:id="@+id/tvNetoTotal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="12dp">
+                android:layout_marginTop="6dp"
+                android:text="@string/recibo_valor_inicial"
+                android:textColor="@color/recibo_azul"
+                android:textSize="28sp"
+                android:textStyle="bold" />
 
-                <!-- ================== QUINCENA A ================== -->
-                <LinearLayout
-                    android:id="@+id/seccionQuincenaA"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginBottom="16dp">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="#EEF4FF"
-                        android:padding="8dp"
-                        android:text="Quincena A"
-                        android:textColor="#1A2B4C"
-                        android:textStyle="bold"
-                        android:textSize="14sp"
-                        android:layout_marginBottom="6dp" />
-
-                    <TableLayout
-                        android:id="@+id/tablaQuincenaA"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-
-                <!-- ================== QUINCENA B ================== -->
-                <LinearLayout
-                    android:id="@+id/seccionQuincenaB"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginBottom="16dp">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="#EEF4FF"
-                        android:padding="8dp"
-                        android:text="Quincena B"
-                        android:textColor="#1A2B4C"
-                        android:textStyle="bold"
-                        android:textSize="14sp"
-                        android:layout_marginBottom="6dp" />
-
-                    <TableLayout
-                        android:id="@+id/tablaQuincenaB"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-
-                <!-- Botón inferior: Nueva consulta -->
-                <Button
-                    android:id="@+id/btnNuevaConsulta"
-                    android:layout_width="wrap_content"
-                    android:layout_height="42dp"
-                    android:text="Nueva consulta"
-                    android:textAllCaps="false"
-                    android:textColor="#2B6EF6"
-                    android:textSize="13sp"
-                    app:backgroundTint="#EEF4FF" />
-
-            </LinearLayout>
+            <TextView
+                android:id="@+id/tvDetalleTotal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="@string/recibo_detalle_ambas"
+                android:textColor="@color/recibo_texto_secundario"
+                android:textSize="12sp" />
         </LinearLayout>
+
+        <!-- Opciones de valor agregado del TP, sin bibliotecas externas. -->
+        <LinearLayout
+            android:id="@+id/cardHerramientasRecibo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:background="@color/recibo_blanco"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <Button
+                android:id="@+id/btnGuardarRecibo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/recibo_boton_guardar"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/btnVerGuardadoRecibo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/recibo_boton_ver_guardado"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/btnCompartirRecibo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/recibo_boton_compartir"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/btnAyudaRecibo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/recibo_boton_ayuda"
+                android:textAllCaps="false" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/recibo_advertencia"
+            android:textColor="@color/recibo_texto_secundario"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/btnNuevaConsulta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/recibo_azul"
+            android:text="@string/recibo_nueva_consulta"
+            android:textAllCaps="false"
+            android:textColor="@color/recibo_blanco" />
     </LinearLayout>
 </ScrollView>

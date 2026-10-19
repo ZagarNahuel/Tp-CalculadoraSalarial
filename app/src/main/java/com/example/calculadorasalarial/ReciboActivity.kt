@@ -1,5 +1,7 @@
-package com.example.proyectomobile
+package com.example.calculadorasalarial
 
+import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Typeface
@@ -14,7 +16,6 @@ import android.widget.TableRow
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import java.text.NumberFormat
 import java.util.Calendar
@@ -138,7 +139,7 @@ class ReciboActivity : AppCompatActivity() {
         // Los valores se validaron arriba. Mes y año permiten conocer el último día.
         val calendario = Calendar.getInstance().apply { set(anio, mes - 1, 1) }
         val ultimoDia = calendario.getActualMaximum(Calendar.DAY_OF_MONTH)
-        val estadoDias = estadoOriginal!!.copyOf()
+        val estadoDias = estadoOriginal.copyOf()
         // Si cambiaron de marzo a febrero, los viejos días 29/30/31 no deben contar.
         for (dia in ultimoDia + 1..31) estadoDias[dia] = 0
 
@@ -159,6 +160,8 @@ class ReciboActivity : AppCompatActivity() {
             )
         } catch (error: Exception) {
             // Fallar claramente es preferible a mostrar un salario falso de $ 0 pesos. no jodas si somos pobres.
+            Log.e("ReciboActivity", "Error al calcular el sueldo", error)
+
             mostrarError(getString(R.string.recibo_error_calculo))
             return
         }

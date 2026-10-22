@@ -30,7 +30,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.Calendar
 
-// Pantalla principal. La categoría y la antigüedad vienen de la cuenta guardada: acá solo se marcan los días.
+// Pantalla principal.
 // Tocar un día: blanco, falta justificada, falta injustificada. Mantener presionado: feriado trabajado (se paga doble).
 class CalculadoraActivity : AppCompatActivity() {
     companion object {

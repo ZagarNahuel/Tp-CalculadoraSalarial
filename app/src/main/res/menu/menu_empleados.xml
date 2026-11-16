@@ -7,9 +7,4 @@
         android:id="@+id/accion_eliminar_todos"
         android:title="@string/emp_menu_eliminar_todos"
         app:showAsAction="never" />
-
-    <item
-        android:id="@+id/accion_volver_calculadora"
-        android:title="@string/emp_menu_volver"
-        app:showAsAction="never" />
 </menu>

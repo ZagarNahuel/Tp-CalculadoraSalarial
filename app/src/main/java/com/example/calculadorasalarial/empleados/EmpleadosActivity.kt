@@ -78,10 +78,6 @@ class EmpleadosActivity : AppCompatActivity() {
             confirmarEliminarTodos()
             true
         }
-        R.id.accion_volver_calculadora -> {
-            finish()
-            true
-        }
         else -> super.onOptionsItemSelected(item)
     }
 

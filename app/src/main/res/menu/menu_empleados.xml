@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Menú de los tres puntitos de la barra de Empleados. -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/accion_eliminar_todos"
+        android:title="@string/emp_menu_eliminar_todos"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/accion_volver_calculadora"
+        android:title="@string/emp_menu_volver"
+        app:showAsAction="never" />
+</menu>

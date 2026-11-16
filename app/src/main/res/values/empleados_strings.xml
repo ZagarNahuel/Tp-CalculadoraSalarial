@@ -34,4 +34,13 @@
     <string name="emp_eliminar_titulo">Eliminar empleado</string>
     <string name="emp_eliminar_mensaje">¿Seguro que querés eliminar a %1$s? Esta acción no se puede deshacer.</string>
     <string name="emp_eliminado">Empleado eliminado</string>
+
+    <!-- Menú de la barra -->
+    <string name="emp_menu_eliminar_todos">Eliminar todos los empleados</string>
+    <string name="emp_menu_volver">Volver a la calculadora</string>
+    <string name="emp_no_hay_empleados">No hay empleados para eliminar</string>
+    <string name="emp_eliminar_todos_titulo">Eliminar todos</string>
+    <string name="emp_eliminar_todos_mensaje">Se van a borrar todos los empleados cargados. Esta acción no se puede deshacer.</string>
+    <string name="emp_eliminar_todos_confirmar">Eliminar todos</string>
+    <string name="emp_eliminados_todos">Se eliminaron todos los empleados</string>
 </resources>

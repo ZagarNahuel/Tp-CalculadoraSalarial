@@ -35,6 +35,7 @@
     <string name="emp_eliminar">Eliminar</string>
     <string name="emp_cancelar">Cancelar</string>
     <string name="emp_eliminar_descripcion">Eliminar empleado</string>
+    <string name="emp_editar_descripcion">Modificar empleado</string>
     <string name="emp_eliminar_titulo">Eliminar empleado</string>
     <string name="emp_eliminar_mensaje">¿Seguro que querés eliminar a %1$s? Esta acción no se puede deshacer.</string>
     <string name="emp_eliminado">Empleado eliminado</string>

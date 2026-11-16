@@ -47,7 +47,9 @@ class EmpleadoAdapter(
             contexto.textoAnios(empleado.antiguedad)
         )
 
+        // Tocar la tarjeta o el lápiz modifica al empleado.
         holder.binding.root.setOnClickListener { listener.onEmpleadoClick(empleado) }
+        holder.binding.btnEditar.setOnClickListener { listener.onEmpleadoClick(empleado) }
         holder.binding.btnEliminar.setOnClickListener { listener.onEliminarClick(empleado) }
         holder.binding.btnLiquidar.setOnClickListener { listener.onLiquidarClick(empleado) }
     }

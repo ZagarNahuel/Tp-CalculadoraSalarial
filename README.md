@@ -1,8 +1,13 @@
 # Calculadora Salarial
 
-Trabajo Práctico 1 · Desarrollo Mobile · 2° / 1ra
+Trabajos Prácticos 1 y 2 · Desarrollo Mobile · 2° / 1ra
 
 Aplicación Android (Kotlin) pensada para los trabajadores del sindicato de lavaderos UOETSYLRA. Calcula el recibo de sueldo quincenal según la categoría, la antigüedad y los días que se marcan en el calendario.
+
+La app se armó en dos partes:
+
+- **TP 1, Calculadora salarial:** registro, login, calculadora y recibo. Está en las secciones desde «Qué hace la app» hasta «Reglas de liquidación».
+- **TP 2, Gestión de empleados (RRHH):** alta, modificación, baja y listado de empleados con una base de datos Room, y liquidación del sueldo de cada uno. Está en la sección «TP 2: Gestión de empleados».
 
 ## Integrantes
 
@@ -60,12 +65,6 @@ Arriba figuran el nombre, la categoría y la antigüedad del empleado. Se elige 
 
 Muestra el resumen de la consulta (remunerativo, no remunerativo, descuentos y neto a cobrar) y el desglose de cada quincena, concepto por concepto. Desde "Cambiar categoría" se recalcula el recibo con otra categoría.
 
-### 5. Explicación de un concepto
-
-<img src="capturas/05-explicacion.png" alt="Explicación de un concepto del recibo" width="260">
-
-Al tocar cualquier fila de la tabla se abre una ventana que explica cómo se calculó ese concepto, con los importes de la categoría y las condiciones para cobrarlo. En la captura, el premio de asistencia perfecta.
-
 ## Cómo usar el calendario
 
 - **Tocar un día** cambia su estado en este orden: trabajado → falta justificada → falta injustificada → trabajado.
@@ -118,9 +117,57 @@ Octubre 2026 · Categoría 2 · 6 años de antigüedad · día 5 falta justifica
 - Segunda quincena: **$642.311,94**
 - Total del mes: **$1.393.727,38**
 
+## TP 2: Gestión de empleados
+
+En el TP 2 se agregó a la misma app una sección para **administrar a los empleados**, guardados en una base de datos **Room**. Se ingresa desde el menú (superior derecha) de la calculadora, en **Gestionar empleados**. Cada empleado tiene nombre, apellido, DNI, categoría y años de antigüedad.
+
+### Qué se agregó
+
+- **Listado:** una tarjeta por empleado, ordenada por apellido y nombre. Si todavía no hay ninguno, la pantalla lo avisa.
+- **Alta:** el botón **Agregar** abre un formulario que valida los datos (nombre y apellido, DNI, categoría y antigüedad) y no deja repetir el DNI.
+- **Modificación:** el icono lápiz de la tarjeta abre el mismo formulario con los datos cargados.
+- **Baja:** el icono "tacho" elimina a un empleado, con confirmación. El menú de la barra tiene **Eliminar todos**, también con confirmación.
+- **Liquidar sueldo:** el botón de cada tarjeta abre la calculadora del TP 1 con la categoría y la antigüedad del empleado ya cargadas. El recibo lleva su nombre y se calcula con el mismo motor del TP 1.
+
+### Capturas del TP 2
+
+#### Menú de la calculadora
+
+<img src="capturas/tp2-01-menu.png" alt="Calculadora con el menú ⋮ abierto y la opción Gestionar empleados" width="260">
+
+Desde la calculadora, el menú ⋮ de arriba a la derecha tiene la opción «Gestionar empleados», que abre la sección del TP 2.
+
+#### Lista de empleados
+
+<img src="capturas/tp2-02-lista.png" alt="Pantalla Empleados con la lista y el botón Agregar" width="260">
+
+Cada empleado es una tarjeta con su nombre, DNI, categoría y años de antigüedad. El botón «Liquidar sueldo» abre la calculadora con sus datos, el tacho lo elimina y el lápiz lo modifica. El botón «Agregar» carga un empleado nuevo y la flecha de arriba vuelve a la calculadora.
+
+#### Alta de un empleado
+
+<img src="capturas/tp2-03-alta.png" alt="Formulario Nuevo empleado" width="260">
+
+El botón «Agregar» abre el formulario «Nuevo empleado»: nombre, apellido, DNI, categoría y años de antigüedad. Antes de guardar se validan los datos y no se permite repetir el DNI. Para modificar a un empleado se usa este mismo formulario, ya cargado con sus datos.
+
+#### Calculadora en modo empleado
+
+<img src="capturas/tp2-04-calculadora-empleado.png" alt="Calculadora con los datos de Juan Diaz" width="260">
+
+«Liquidar sueldo» abre la calculadora con el nombre, la categoría y la antigüedad del empleado ya cargados. En este modo no aparece el menú y «Atrás» vuelve a la lista de empleados.
+
+#### Recibo del empleado
+
+<img src="capturas/tp2-05-recibo-empleado.png" alt="Recibo de sueldo de un empleado" width="260">
+
+El recibo lleva arriba el nombre del empleado y se calcula con el mismo motor del TP 1. No muestra «Cambiar categoría», porque la categoría es la del empleado.
+
 ## Tecnologías
 
 - Kotlin y Android Views (XML)
 - Material Design 3
 - SharedPreferences para usuarios y sesión (contraseñas con hash PBKDF2 y sal)
+- Room, con KSP, para los empleados (TP 2)
+- Fragments y Navigation Component (TP 2)
+- MVVM con ViewModel, LiveData y corrutinas (TP 2)
+- RecyclerView y ViewBinding (TP 2)
 - Gradle con Kotlin DSL

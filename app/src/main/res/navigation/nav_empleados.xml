@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mapa de pantallas de Empleados. 'startDestination' es la primera que se muestra.
+     Cada <action> es un camino que se puede recorrer con navigate(). -->
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_empleados"
+    app:startDestination="@id/listaEmpleadosFragment">
+
+    <fragment
+        android:id="@+id/listaEmpleadosFragment"
+        android:name="com.example.calculadorasalarial.empleados.ListaEmpleadosFragment"
+        android:label="@string/emp_titulo"
+        tools:layout="@layout/fragment_lista_empleados">
+        <action
+            android:id="@+id/action_lista_to_alta"
+            app:destination="@id/altaEmpleadoFragment" />
+        <action
+            android:id="@+id/action_lista_to_modificar"
+            app:destination="@id/modificarEmpleadoFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/altaEmpleadoFragment"
+        android:name="com.example.calculadorasalarial.empleados.AltaEmpleadoFragment"
+        android:label="@string/emp_titulo_alta"
+        tools:layout="@layout/fragment_formulario_empleado" />
+
+    <!-- A esta pantalla se le pasan los datos del empleado en un Bundle (ver ArgumentosEmpleado). -->
+    <fragment
+        android:id="@+id/modificarEmpleadoFragment"
+        android:name="com.example.calculadorasalarial.empleados.ModificarEmpleadoFragment"
+        android:label="@string/emp_titulo_modificar"
+        tools:layout="@layout/fragment_formulario_empleado" />
+</navigation>

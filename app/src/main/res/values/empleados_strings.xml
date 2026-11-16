@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Textos de la sección Empleados (TP 2). -->
+    <string name="emp_titulo">Empleados</string>
+    <string name="emp_titulo_alta">Nuevo empleado</string>
+    <string name="emp_titulo_modificar">Modificar empleado</string>
+    <string name="emp_ir_a_empleados">Gestionar empleados</string>
+    <string name="calc_mas_opciones">Más opciones</string>
+    <string name="emp_agregar">Agregar</string>
+    <string name="emp_lista_vacia">Todavía no hay empleados cargados.\nTocá «Agregar» para cargar el primero.</string>
+    <string name="emp_detalle">DNI %1$s · %2$s · %3$s</string>
+    <string name="emp_liquidar">Liquidar sueldo</string>
+    <string name="emp_recibo_cabecera">Empleado: %1$s\n%2$s</string>
+    <string name="emp_recibo_compartir">Empleado: %1$s</string>
+
+    <!-- Formulario (sirve para el alta y para la modificación) -->
+    <string name="emp_hint_nombre">Nombre</string>
+    <string name="emp_hint_apellido">Apellido</string>
+    <string name="emp_hint_dni">DNI (solo números)</string>
+    <string name="emp_label_categoria">Categoría</string>
+    <string name="emp_categoria_elegir">Seleccionar categoría</string>
+    <string name="emp_hint_antiguedad">Años de antigüedad</string>
+    <string name="emp_guardar">Guardar empleado</string>
+    <string name="emp_guardar_cambios">Guardar cambios</string>
+    <string name="emp_error_nombre">Ingresá el nombre</string>
+    <string name="emp_error_apellido">Ingresá el apellido</string>
+    <string name="emp_error_dni">El DNI debe tener 7 u 8 números</string>
+    <string name="emp_error_dni_repetido">Ya hay un empleado cargado con ese DNI</string>
+    <string name="emp_error_categoria">Seleccioná una categoría</string>
+    <string name="emp_error_antiguedad">Ingresá una cantidad válida de años (0 a 60)</string>
+    <string name="emp_alta_ok">Empleado agregado</string>
+    <string name="emp_modificacion_ok">Cambios guardados</string>
+
+    <!-- Baja -->
+    <string name="emp_eliminar">Eliminar</string>
+    <string name="emp_cancelar">Cancelar</string>
+    <string name="emp_eliminar_descripcion">Eliminar empleado</string>
+    <string name="emp_editar_descripcion">Modificar empleado</string>
+    <string name="emp_eliminar_titulo">Eliminar empleado</string>
+    <string name="emp_eliminar_mensaje">¿Seguro que querés eliminar a %1$s? Esta acción no se puede deshacer.</string>
+    <string name="emp_eliminado">Empleado eliminado</string>
+
+    <!-- Menú de la barra -->
+    <string name="emp_menu_eliminar_todos">Eliminar todos los empleados</string>
+    <string name="emp_no_hay_empleados">No hay empleados para eliminar</string>
+    <string name="emp_eliminar_todos_titulo">Eliminar todos</string>
+    <string name="emp_eliminar_todos_mensaje">Se van a borrar todos los empleados cargados. Esta acción no se puede deshacer.</string>
+    <string name="emp_eliminar_todos_confirmar">Eliminar todos</string>
+    <string name="emp_eliminados_todos">Se eliminaron todos los empleados</string>
+</resources>

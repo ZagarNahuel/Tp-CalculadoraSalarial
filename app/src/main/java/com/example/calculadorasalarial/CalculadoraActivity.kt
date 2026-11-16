@@ -13,6 +13,7 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.GridLayout
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.Spinner
 import android.widget.TextView
@@ -21,11 +22,13 @@ import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.ColorRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.children
+import com.example.calculadorasalarial.empleados.EmpleadosActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.Calendar
@@ -44,9 +47,18 @@ class CalculadoraActivity : AppCompatActivity() {
         private const val GUARDADO_ESTADO = "estado_dias"
         private const val GUARDADO_MES = "mes"
         private const val GUARDADO_ANIO = "anio"
+
+        // Datos de un empleado: los manda la sección Empleados con el botón "Liquidar sueldo".
+        const val EXTRA_EMPLEADO_NOMBRE = "EMPLEADO_NOMBRE"
+        const val EXTRA_EMPLEADO_CATEGORIA = "EMPLEADO_CATEGORIA"
+        const val EXTRA_EMPLEADO_ANTIGUEDAD = "EMPLEADO_ANTIGUEDAD"
     }
 
     private val repositorio by lazy { RepositorioUsuarios(this) }
+
+    // Si la pantalla se abrió desde Empleados, acá están los datos de ese empleado y se calcula su sueldo.
+    // Si es null, se calcula el sueldo de la cuenta iniciada, como siempre.
+    private var empleadoElegido: Usuario? = null
 
     // Estado de cada día (la posición es el día del mes): 0 trabajado, 1 justificada, 2 injustificada, 3 feriado.
     private val estadoDias = IntArray(32)
@@ -97,6 +109,17 @@ class CalculadoraActivity : AppCompatActivity() {
             return
         }
 
+        // Si viene de Empleados ("Liquidar sueldo"), se arma un Usuario con los datos de ese empleado.
+        intent.getStringExtra(EXTRA_EMPLEADO_NOMBRE)?.let { nombre ->
+            empleadoElegido = Usuario(
+                nombre = nombre,
+                email = "",
+                usuario = "",
+                categoria = intent.getStringExtra(EXTRA_EMPLEADO_CATEGORIA).orEmpty(),
+                antiguedad = intent.getIntExtra(EXTRA_EMPLEADO_ANTIGUEDAD, 0)
+            )
+        }
+
         setContentView(R.layout.activity_calculadora)
         ajustarBordesDelSistema()
 
@@ -123,6 +146,25 @@ class CalculadoraActivity : AppCompatActivity() {
 
         // 'Atrás' (el botón y el del celular) vuelve al login y cierra la sesión.
         findViewById<Button>(R.id.btnAtras).setOnClickListener { volverAlLogin() }
+
+        // Menú de los tres puntitos (arriba a la derecha) con acceso a Empleados (TP 2).
+        // Si ya se está liquidando a un empleado, los puntitos no se muestran.
+        val btnMenu = findViewById<ImageButton>(R.id.btnMenuCalculadora)
+        btnMenu.visibility = if (empleadoElegido != null) View.GONE else View.VISIBLE
+        btnMenu.setOnClickListener { vista ->
+            val popup = PopupMenu(this, vista)
+            popup.menuInflater.inflate(R.menu.menu_calculadora, popup.menu)
+            popup.setOnMenuItemClickListener { opcion ->
+                when (opcion.itemId) {
+                    R.id.accion_gestionar_empleados -> {
+                        startActivity(Intent(this, EmpleadosActivity::class.java))
+                        true
+                    }
+                    else -> false
+                }
+            }
+            popup.show()
+        }
         onBackPressedDispatcher.addCallback(this) { volverAlLogin() }
 
         spMes.adapter = adaptadorSpinnerBlanco(resources.getStringArray(R.array.lista_meses))
@@ -182,7 +224,7 @@ class CalculadoraActivity : AppCompatActivity() {
     }
 
     private fun mostrarDatosEmpleado() {
-        val usuario = repositorio.usuarioActual() ?: return
+        val usuario = empleadoElegido ?: repositorio.usuarioActual() ?: return
         tvNombreEmpleado.text = usuario.nombre
         tvDatosEmpleado.text = getString(
             R.string.calc_datos_empleado,
@@ -192,7 +234,7 @@ class CalculadoraActivity : AppCompatActivity() {
     }
 
     private fun calcularRecibo() {
-        val usuario = repositorio.usuarioActual()
+        val usuario = empleadoElegido ?: repositorio.usuarioActual()
         if (usuario == null) {
             irAlLogin()
             return
@@ -216,6 +258,8 @@ class CalculadoraActivity : AppCompatActivity() {
         val intentRecibo = Intent(this, ReciboActivity::class.java)
         intentRecibo.putExtra("CATEGORIA", usuario.categoria)
         intentRecibo.putExtra("ANTIGUEDAD", usuario.antiguedad)
+        // El Recibo usa el nombre para mostrar de quién es la liquidación.
+        if (empleadoElegido != null) intentRecibo.putExtra(ReciboActivity.EXTRA_EMPLEADO_NOMBRE, usuario.nombre)
         intentRecibo.putExtra("MES_NOMBRE", spMes.selectedItem.toString())
         intentRecibo.putExtra("MES_NUMERO", spMes.selectedItemPosition + 1)
         intentRecibo.putExtra("ANIO", anioSeleccionado)
@@ -249,6 +293,11 @@ class CalculadoraActivity : AppCompatActivity() {
 
     // Vuelve al login y cierra la sesión (así 'Mantener sesión' no se salta el login al volver).
     private fun volverAlLogin() {
+        // Si se está liquidando a un empleado, 'Atrás' vuelve a la lista de Empleados y no cierra la sesión.
+        if (empleadoElegido != null) {
+            finish()
+            return
+        }
         repositorio.cerrarSesion()
         irAlLogin()
     }

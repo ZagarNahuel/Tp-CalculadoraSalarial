@@ -33,6 +33,9 @@ class ReciboActivity : AppCompatActivity() {
         const val EXTRA_ACCION_RECIBO = "ACCION_RECIBO"
         const val ACCION_NUEVA_CONSULTA = "NUEVA_CONSULTA"
 
+        // Si el recibo es de un empleado (se abrió desde Empleados), la Calculadora manda su nombre.
+        const val EXTRA_EMPLEADO_NOMBRE = "EMPLEADO_NOMBRE"
+
         private const val PREFS_RECIBO = "recibo_ultima_consulta_v1"
     }
 
@@ -42,6 +45,7 @@ class ReciboActivity : AppCompatActivity() {
     }
 
     private var categoria = ""
+    private var nombreEmpleado: String? = null
     private var antiguedad = 0
     private var mes = -1
     private var anio = -1
@@ -132,6 +136,11 @@ class ReciboActivity : AppCompatActivity() {
         apercibimientoQ1 = intent.getBooleanExtra("APERCIBIMIENTO_Q1", false)
         apercibimientoQ2 = intent.getBooleanExtra("APERCIBIMIENTO_Q2", false)
 
+        // En el recibo de un empleado no se cambia la categoría desde acá: eso cambiaría la de la cuenta
+        // iniciada. La categoría de un empleado se modifica desde la sección Empleados.
+        nombreEmpleado = intent.getStringExtra(EXTRA_EMPLEADO_NOMBRE)
+        if (nombreEmpleado != null) tvCambiarCategoria.visibility = View.GONE
+
         validarYMostrar()
     }
 
@@ -164,6 +173,10 @@ class ReciboActivity : AppCompatActivity() {
         tvEncabezado.text = getString(
             R.string.recibo_cabecera_datos, periodo, MotorLiquidacion.nombreVisible(categoria), textoAnios(antiguedad)
         )
+        // Si es el recibo de un empleado, se agrega su nombre arriba del encabezado.
+        nombreEmpleado?.let {
+            tvEncabezado.text = getString(R.string.emp_recibo_cabecera, it, tvEncabezado.text)
+        }
 
         val resultado = try {
             MotorLiquidacion.calcularMes(
@@ -251,6 +264,7 @@ class ReciboActivity : AppCompatActivity() {
         btnCompartir.setOnClickListener {
             val resumen = buildString {
                 appendLine(getString(R.string.recibo_compartir_titulo, periodo))
+                nombreEmpleado?.let { appendLine(getString(R.string.emp_recibo_compartir, it)) }
                 appendLine(getString(R.string.recibo_compartir_categoria, categoria))
                 appendLine(getString(R.string.recibo_compartir_quincenas, quincenas))
                 appendLine(getString(R.string.recibo_resumen_remunerativo, dinero(remunerativo)))

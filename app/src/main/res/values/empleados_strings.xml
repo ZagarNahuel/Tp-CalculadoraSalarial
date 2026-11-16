@@ -5,6 +5,7 @@
     <string name="emp_titulo_alta">Nuevo empleado</string>
     <string name="emp_titulo_modificar">Modificar empleado</string>
     <string name="emp_ir_a_empleados">Gestionar empleados</string>
+    <string name="calc_mas_opciones">Más opciones</string>
     <string name="emp_agregar">Agregar</string>
     <string name="emp_lista_vacia">Todavía no hay empleados cargados.\nTocá «Agregar» para cargar el primero.</string>
     <string name="emp_detalle">DNI %1$s · %2$s · %3$s</string>

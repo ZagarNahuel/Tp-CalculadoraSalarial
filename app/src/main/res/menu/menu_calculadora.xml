@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Menú de los tres puntitos de la calculadora. -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/accion_gestionar_empleados"
+        android:title="@string/emp_ir_a_empleados" />
+</menu>

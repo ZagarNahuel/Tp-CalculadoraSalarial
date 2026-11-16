@@ -13,6 +13,7 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.GridLayout
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.Spinner
 import android.widget.TextView
@@ -21,6 +22,7 @@ import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.ColorRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
@@ -145,11 +147,23 @@ class CalculadoraActivity : AppCompatActivity() {
         // 'Atrás' (el botón y el del celular) vuelve al login y cierra la sesión.
         findViewById<Button>(R.id.btnAtras).setOnClickListener { volverAlLogin() }
 
-        // Abre la sección Empleados (TP 2). Si ya se está liquidando a un empleado, el botón no se muestra.
-        val btnEmpleados = findViewById<Button>(R.id.btnEmpleados)
-        btnEmpleados.visibility = if (empleadoElegido != null) View.GONE else View.VISIBLE
-        btnEmpleados.setOnClickListener {
-            startActivity(Intent(this, EmpleadosActivity::class.java))
+        // Menú de los tres puntitos (arriba a la derecha) con acceso a Empleados (TP 2).
+        // Si ya se está liquidando a un empleado, los puntitos no se muestran.
+        val btnMenu = findViewById<ImageButton>(R.id.btnMenuCalculadora)
+        btnMenu.visibility = if (empleadoElegido != null) View.GONE else View.VISIBLE
+        btnMenu.setOnClickListener { vista ->
+            val popup = PopupMenu(this, vista)
+            popup.menuInflater.inflate(R.menu.menu_calculadora, popup.menu)
+            popup.setOnMenuItemClickListener { opcion ->
+                when (opcion.itemId) {
+                    R.id.accion_gestionar_empleados -> {
+                        startActivity(Intent(this, EmpleadosActivity::class.java))
+                        true
+                    }
+                    else -> false
+                }
+            }
+            popup.show()
         }
         onBackPressedDispatcher.addCallback(this) { volverAlLogin() }
 

@@ -1,7 +1,6 @@
 package com.example.calculadorasalarial.empleados
 
 import android.os.Bundle
-import androidx.core.os.bundleOf
 
 // Un Bundle es una "mochila" de datos que viaja de una pantalla a otra.
 // La lista arma la mochila con los datos del empleado y la pantalla de modificación la abre.
@@ -13,14 +12,14 @@ object ArgumentosEmpleado {
     private const val CATEGORIA = "empleado_categoria"
     private const val ANTIGUEDAD = "empleado_antiguedad"
 
-    fun aBundle(empleado: Empleado): Bundle = bundleOf(
-        ID to empleado.id,
-        NOMBRE to empleado.nombre,
-        APELLIDO to empleado.apellido,
-        DNI to empleado.dni,
-        CATEGORIA to empleado.categoria,
-        ANTIGUEDAD to empleado.antiguedad
-    )
+    fun aBundle(empleado: Empleado): Bundle = Bundle().apply {
+        putInt(ID, empleado.id)
+        putString(NOMBRE, empleado.nombre)
+        putString(APELLIDO, empleado.apellido)
+        putString(DNI, empleado.dni)
+        putString(CATEGORIA, empleado.categoria)
+        putInt(ANTIGUEDAD, empleado.antiguedad)
+    }
 
     fun desdeBundle(bundle: Bundle): Empleado = Empleado(
         id = bundle.getInt(ID),

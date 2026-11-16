@@ -42,12 +42,23 @@ class EmpleadosActivity : AppCompatActivity() {
         // La barra muestra el título de cada pantalla y la flecha para volver.
         NavigationUI.setupActionBarWithNavController(this, navController)
 
-        // Cada vez que cambia la pantalla se vuelve a armar el menú (ver onPrepareOptionsMenu).
-        navController.addOnDestinationChangedListener { _, _, _ -> invalidateOptionsMenu() }
+        // Cada vez que cambia la pantalla: la flecha de volver se muestra siempre (también en el listado,
+        // donde Navigation la oculta) y se vuelve a armar el menú (ver onPrepareOptionsMenu).
+        navController.addOnDestinationChangedListener { _, _, _ ->
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            invalidateOptionsMenu()
+        }
     }
 
-    // Flecha de volver de la barra: vuelve a la pantalla anterior de la navegación.
-    override fun onSupportNavigateUp(): Boolean = navController.navigateUp() || super.onSupportNavigateUp()
+    // Flecha de volver de la barra. En el listado vuelve a la calculadora; en el alta o la
+    // modificación vuelve a la pantalla anterior de la navegación.
+    override fun onSupportNavigateUp(): Boolean {
+        if (navController.currentDestination?.id == R.id.listaEmpleadosFragment) {
+            finish()
+            return true
+        }
+        return navController.navigateUp() || super.onSupportNavigateUp()
+    }
 
     // Arma el menú de los tres puntitos a partir de res/menu/menu_empleados.xml.
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

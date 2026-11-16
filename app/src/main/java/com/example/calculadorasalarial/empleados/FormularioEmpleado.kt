@@ -52,7 +52,9 @@ class FormularioEmpleado(private val binding: FragmentFormularioEmpleadoBinding)
         binding.tvErrorCategoria.visibility = if (categoriaOk) View.GONE else View.VISIBLE
         binding.tilAntiguedad.error = if (antiguedadOk) null else contexto.getString(R.string.emp_error_antiguedad)
 
-        if (!(nombreOk && apellidoOk && dniOk && categoriaOk && antiguedadOk) || antiguedad == null) return null
+        // Si algún dato está mal no se arma el empleado (los errores ya quedaron marcados arriba).
+        val anios = antiguedad ?: return null
+        if (!(nombreOk && apellidoOk && dniOk && categoriaOk && antiguedadOk)) return null
 
         return Empleado(
             id = id,
@@ -60,7 +62,7 @@ class FormularioEmpleado(private val binding: FragmentFormularioEmpleadoBinding)
             apellido = apellido,
             dni = dni,
             categoria = MotorLiquidacion.categorias[posicionCategoria - 1],
-            antiguedad = antiguedad
+            antiguedad = anios
         )
     }
 

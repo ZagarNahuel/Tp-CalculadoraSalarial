@@ -75,6 +75,19 @@
             android:textColor="@color/calc_texto_encabezado"
             android:textSize="13sp"
             tools:text="Categoría inicial · 1 año de antigüedad" />
+
+        <Button
+            android:id="@+id/btnEmpleados"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/emp_ir_a_empleados"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:strokeColor="@color/white" />
     </LinearLayout>
 
     <ScrollView

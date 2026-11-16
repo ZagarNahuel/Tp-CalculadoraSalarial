@@ -26,6 +26,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.children
+import com.example.calculadorasalarial.empleados.EmpleadosActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.Calendar
@@ -123,6 +124,11 @@ class CalculadoraActivity : AppCompatActivity() {
 
         // 'Atrás' (el botón y el del celular) vuelve al login y cierra la sesión.
         findViewById<Button>(R.id.btnAtras).setOnClickListener { volverAlLogin() }
+
+        // Abre la sección Empleados (TP 2).
+        findViewById<Button>(R.id.btnEmpleados).setOnClickListener {
+            startActivity(Intent(this, EmpleadosActivity::class.java))
+        }
         onBackPressedDispatcher.addCallback(this) { volverAlLogin() }
 
         spMes.adapter = adaptadorSpinnerBlanco(resources.getStringArray(R.array.lista_meses))

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Textos de la sección Empleados (TP 2). -->
+    <string name="emp_titulo">Empleados</string>
+    <string name="emp_ir_a_empleados">Gestionar empleados</string>
+    <string name="emp_lista_vacia">Todavía no hay empleados cargados.</string>
+    <string name="emp_detalle">DNI %1$s · %2$s · %3$s</string>
+</resources>

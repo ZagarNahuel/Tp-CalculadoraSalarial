@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/raizEmpleados"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/calc_fondo"
+    android:orientation="vertical"
+    tools:context=".empleados.EmpleadosActivity">
+
+    <!-- El azul llega hasta arriba de todo: el espacio de la barra de estado se suma desde el código. -->
+    <LinearLayout
+        android:id="@+id/encabezadoEmpleados"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/calc_azul"
+        android:orientation="vertical">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@android:color/transparent"
+            android:theme="@style/ThemeOverlay.CalculadoraSalarial.Toolbar"
+            app:navigationIconTint="@color/white"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:titleTextColor="@color/white" />
+    </LinearLayout>
+
+    <!-- Acá se van cambiando las pantallas (fragments) según el nav_empleados. -->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/contenedorEmpleados"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/nav_empleados" />
+</LinearLayout>

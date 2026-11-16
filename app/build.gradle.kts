@@ -52,6 +52,9 @@ dependencies {
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.navigation.ui)
 
+    // Listado de empleados
+    implementation(libs.androidx.recyclerview)
+
     // MVVM: ViewModel y LiveData
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.livedata.ktx)

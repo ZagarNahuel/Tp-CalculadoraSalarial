@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Una fila del listado: así se dibuja cada empleado. -->
+<!-- Una fila del listado: así se dibuja cada empleado. Tocar la fila modifica; el tacho elimina. -->
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -23,24 +23,49 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <TextView
-            android:id="@+id/tvNombreItem"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@color/calc_negro"
-            android:textSize="17sp"
-            android:textStyle="bold"
-            tools:text="Rocío Madrid" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/tvDetalleItem"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:textColor="@color/calc_domingo_texto"
-            android:textSize="14sp"
-            tools:text="DNI 30123456 · Categoría 2 · 6 años" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvNombreItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/calc_negro"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    tools:text="Rocío Madrid" />
+
+                <TextView
+                    android:id="@+id/tvDetalleItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textColor="@color/calc_domingo_texto"
+                    android:textSize="14sp"
+                    tools:text="DNI 30123456 · Categoría 2 · 6 años" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/btnEliminar"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_marginStart="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/emp_eliminar_descripcion"
+                android:padding="10dp"
+                android:src="@drawable/ic_eliminar"
+                app:tint="@color/calc_rojo" />
+        </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

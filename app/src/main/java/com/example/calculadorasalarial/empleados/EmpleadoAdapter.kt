@@ -10,10 +10,20 @@ import com.example.calculadorasalarial.R
 import com.example.calculadorasalarial.databinding.ItemEmpleadoBinding
 import com.example.calculadorasalarial.textoAnios
 
+// Cómo se entera la pantalla de lo que se toca en cada fila. El adaptador no sabe qué hacer
+// con el toque: solo avisa, y el fragment que lo implementa decide (modificar, eliminar...).
+interface OnEmpleadoClickListener {
+    fun onEmpleadoClick(empleado: Empleado)
+
+    fun onEliminarClick(empleado: Empleado)
+}
+
 // El adaptador es el puente entre la lista de empleados y el RecyclerView.
 // El RecyclerView solo crea las filas que se ven en pantalla y las reutiliza al hacer scroll.
 // ListAdapter usa DiffUtil: compara la lista vieja con la nueva y solo redibuja lo que cambió.
-class EmpleadoAdapter : ListAdapter<Empleado, EmpleadoAdapter.EmpleadoViewHolder>(DiferenciasEmpleado) {
+class EmpleadoAdapter(
+    private val listener: OnEmpleadoClickListener
+) : ListAdapter<Empleado, EmpleadoAdapter.EmpleadoViewHolder>(DiferenciasEmpleado) {
 
     // El ViewHolder guarda las vistas de una fila para no buscarlas cada vez.
     class EmpleadoViewHolder(val binding: ItemEmpleadoBinding) : RecyclerView.ViewHolder(binding.root)
@@ -34,6 +44,9 @@ class EmpleadoAdapter : ListAdapter<Empleado, EmpleadoAdapter.EmpleadoViewHolder
             MotorLiquidacion.nombreVisible(empleado.categoria),
             contexto.textoAnios(empleado.antiguedad)
         )
+
+        holder.binding.root.setOnClickListener { listener.onEmpleadoClick(empleado) }
+        holder.binding.btnEliminar.setOnClickListener { listener.onEliminarClick(empleado) }
     }
 }
 

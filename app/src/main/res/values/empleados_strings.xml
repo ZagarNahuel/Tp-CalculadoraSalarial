@@ -8,6 +8,9 @@
     <string name="emp_agregar">Agregar</string>
     <string name="emp_lista_vacia">Todavía no hay empleados cargados.\nTocá «Agregar» para cargar el primero.</string>
     <string name="emp_detalle">DNI %1$s · %2$s · %3$s</string>
+    <string name="emp_liquidar">Liquidar sueldo</string>
+    <string name="emp_recibo_cabecera">Empleado: %1$s\n%2$s</string>
+    <string name="emp_recibo_compartir">Empleado: %1$s</string>
 
     <!-- Formulario (sirve para el alta y para la modificación) -->
     <string name="emp_hint_nombre">Nombre</string>

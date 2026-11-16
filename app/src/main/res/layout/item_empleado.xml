@@ -67,5 +67,15 @@
                 android:src="@drawable/ic_eliminar"
                 app:tint="@color/calc_rojo" />
         </LinearLayout>
+
+        <!-- Abre la calculadora con la categoría y la antigüedad de este empleado. -->
+        <Button
+            android:id="@+id/btnLiquidar"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/emp_liquidar"
+            android:textAllCaps="false" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

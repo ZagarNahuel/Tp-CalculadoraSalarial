@@ -16,6 +16,8 @@ interface OnEmpleadoClickListener {
     fun onEmpleadoClick(empleado: Empleado)
 
     fun onEliminarClick(empleado: Empleado)
+
+    fun onLiquidarClick(empleado: Empleado)
 }
 
 // El adaptador es el puente entre la lista de empleados y el RecyclerView.
@@ -47,6 +49,7 @@ class EmpleadoAdapter(
 
         holder.binding.root.setOnClickListener { listener.onEmpleadoClick(empleado) }
         holder.binding.btnEliminar.setOnClickListener { listener.onEliminarClick(empleado) }
+        holder.binding.btnLiquidar.setOnClickListener { listener.onLiquidarClick(empleado) }
     }
 }
 

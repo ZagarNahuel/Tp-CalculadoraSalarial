@@ -1,5 +1,6 @@
 package com.example.calculadorasalarial.empleados
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.calculadorasalarial.CalculadoraActivity
 import com.example.calculadorasalarial.R
 import com.example.calculadorasalarial.databinding.FragmentListaEmpleadosBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -72,6 +74,15 @@ class ListaEmpleadosFragment : Fragment(), OnEmpleadoClickListener {
                 Toast.makeText(requireContext(), R.string.emp_eliminado, Toast.LENGTH_SHORT).show()
             }
             .show()
+    }
+
+    // Tocar "Liquidar sueldo": abre la calculadora y le pasa los datos del empleado en el Intent.
+    override fun onLiquidarClick(empleado: Empleado) {
+        val intent = Intent(requireContext(), CalculadoraActivity::class.java)
+            .putExtra(CalculadoraActivity.EXTRA_EMPLEADO_NOMBRE, empleado.nombreCompleto())
+            .putExtra(CalculadoraActivity.EXTRA_EMPLEADO_CATEGORIA, empleado.categoria)
+            .putExtra(CalculadoraActivity.EXTRA_EMPLEADO_ANTIGUEDAD, empleado.antiguedad)
+        startActivity(intent)
     }
 
     override fun onDestroyView() {
